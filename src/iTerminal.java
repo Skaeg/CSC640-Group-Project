@@ -7,6 +7,6 @@
  */
 public interface iTerminal
 {
-    Boolean Login(int providerNumber);
-    String EnterMemberNumber(int memberNumber);
+    String getInput(String);
+    String sendOutput(String);
 }
