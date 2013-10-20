@@ -5,7 +5,7 @@
  * Time: 6:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Administrator implements iPerson
+public class Administrator implements iPerson, iRequestReport
 {
     @Override
     public String getName()
@@ -31,8 +31,55 @@ public class Administrator implements iPerson
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public iReport RequestReport(ReportType reportTypeRequest)
+    @Override
+    public int getIdentifier()
     {
-        return ReportFactory.CreateReport(reportTypeRequest);
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public void setIdentifier(int)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public iReport RequestReport(reportType)
+    {
+        return void;
+        //this was put in by Steve earlier - not sure if this is what should be done or???
+        // return ReportFactory.CreateReport(reportTypeRequest);
+    }
+
+    public id saveMember(Member)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Member getMember(id)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int deleteMember(id)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public id saveProvider(Provider)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public int deleteProvider(id)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Provider getProvider(id)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+
+
 }
