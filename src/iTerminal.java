@@ -7,6 +7,7 @@
  */
 public interface iTerminal
 {
-    String getInput(String);
-    String sendOutput(String);
+    //adding new methods
+    String getInput(String){}
+    String sendOutput(String){}
 }
