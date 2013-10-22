@@ -11,7 +11,7 @@ public class Member implements iPerson
     @Override
     public String getName()
     {
-    	//test
+    	//ok I think I have it working
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
