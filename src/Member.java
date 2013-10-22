@@ -7,29 +7,47 @@
  */
 public class Member implements iPerson
 {
+  private String fname = "";
+  private String lname = "";
+  private String address = "not entered";
+  private int memberID = -1;
+
+    Member(String first, String last){
+        this.fname = first;
+        this.lname = last;
+    }
 
     @Override
     public String getName()
     {
-    	//ok I think I have it working
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+         return this.fname + " " + this.lname;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setName(String name)
+    public void setName(String first, String last)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.fname = first;
+        this.lname = last;
     }
 
     @Override
-    public StreetAddress getAddress()
+    public String getAddress()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return this.address;
     }
 
     @Override
-    public void setAddress(StreetAddress address)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Override
+    public int getIdentifier() {
+        return this.memberID;
+    }
+
+    @Override
+    public void setIdentifier(int id) {
+        this.memberID = id;
     }
 }

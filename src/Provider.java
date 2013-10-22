@@ -14,19 +14,19 @@ public class Provider implements iPerson
     }
 
     @Override
-    public void setName(String name)
+    public void setName(String first, String last)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public StreetAddress getAddress()
+    public String getAddress()
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setAddress(StreetAddress address)
+    public void setAddress(String address)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -34,11 +34,11 @@ public class Provider implements iPerson
     @Override
     public int getIdentifier()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return -1;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setIdentifier(int)
+    public void setIdentifier(int id)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -46,16 +46,19 @@ public class Provider implements iPerson
     public int addMemberServiceRecord(Service service)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return -1;
     }
 
     public String checkMemberStatus(int memberID)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
-    public ServiceDirectory requestServiceDirectory
+    public ServiceDirectory requestServiceDirectory()
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
 

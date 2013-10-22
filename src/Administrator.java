@@ -14,19 +14,19 @@ public class Administrator implements iPerson, iRequestReport
     }
 
     @Override
-    public void setName(String name)
+    public void setName(String first, String last)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public StreetAddress getAddress()
+    public String getAddress()
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setAddress(StreetAddress address)
+    public void setAddress(String address)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -34,52 +34,53 @@ public class Administrator implements iPerson, iRequestReport
     @Override
     public int getIdentifier()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return -1;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setIdentifier(int)
+    public void setIdentifier(int id)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public iReport RequestReport(reportType)
-    {
-        return void;
-        //this was put in by Steve earlier - not sure if this is what should be done or???
-        // return ReportFactory.CreateReport(reportTypeRequest);
-    }
-
-    public id saveMember(Member)
+   public int saveMember(Member m)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return -1;
     }
 
-    public Member getMember(id)
+    public Member getMember(int id)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
-    public int deleteMember(id)
+    public int deleteMember(int id)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return -1;
     }
 
-    public id saveProvider(Provider)
+    public int saveProvider(Provider p)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return -1;
     }
 
-    public int deleteProvider(id)
+    public int deleteProvider(int id)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return -1;
     }
 
-    public Provider getProvider(id)
+    public Provider getProvider(int id)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
-
-
+    @Override
+    public void requestReport(int reportType) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

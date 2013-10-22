@@ -7,4 +7,6 @@
  */
 public interface iReport
 {
+    void sendReport();
+    void executeReport();
 }

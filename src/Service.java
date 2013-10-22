@@ -7,10 +7,18 @@
  */
 public class Service
 {
-    void DeleteThis(){
-        //do what it says!
-        //i've forgotten everything it seems!
-        //lalala
-        // Adding a comment to see if I can update the git
+    private int serviceCode = -1;
+    private String serviceName = "";
+    private Double serviceFee = -1.0d;
+
+    int getServiceCode(){
+      return this.serviceCode;
+}
+    String getServiceName(){
+       return this.serviceName;
+    }
+
+    Double getServiceFee(){
+        return this.serviceFee;
     }
 }

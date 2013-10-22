@@ -8,6 +8,6 @@
 public interface iTerminal
 {
     //adding new methods
-    String getInput(String);
-    String sendOutput(String);
+    String getInput(String str);
+    String sendOutput(String str);
 }
