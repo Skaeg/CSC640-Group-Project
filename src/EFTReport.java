@@ -1,16 +1,12 @@
 /**
  * Created with IntelliJ IDEA.
  * User: Steve
- * Date: 10/21/13
- * Time: 6:05 PM
+ * Date: 10/23/13
+ * Time: 6:17 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MemberReport implements iReport
+public class EFTReport implements iReport
 {
-    public MemberReport()
-    {
-    }
-
     @Override
     public void sendReport()
     {
