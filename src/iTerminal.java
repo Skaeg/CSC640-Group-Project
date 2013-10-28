@@ -9,5 +9,5 @@ public interface iTerminal
 {
     //adding new methods
     String getInput(String str);
-    String sendOutput(String str);
+    void sendOutput(String str);
 }

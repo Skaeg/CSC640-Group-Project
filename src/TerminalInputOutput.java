@@ -1,14 +1,20 @@
+import java.util.Scanner;
+
 public class TerminalInputOutput implements iTerminal
 {
+    static Scanner input = new Scanner(System.in);
+
     @Override
-    public String getInput(String str) {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return null;
+    public String getInput(String prompt)
+    {
+        System.out.println(prompt + "\r\n");
+        return input.nextLine();
     }
 
     @Override
-    public String sendOutput(String str) {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return null;
+    public void sendOutput(String message)
+    {
+        System.out.println(message);
     }
+
 }

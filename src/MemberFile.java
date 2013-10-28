@@ -1,11 +1,10 @@
 /**
  * Created with IntelliJ IDEA.
  * User: Steve
- * Date: 10/16/13
- * Time: 5:17 PM
+ * Date: 10/23/13
+ * Time: 7:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum ReportType
+public class MemberFile implements iController
 {
-
 }

@@ -1,3 +1,5 @@
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Steve
@@ -5,7 +7,7 @@
  * Time: 4:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Provider implements iPerson
+public class Provider implements iPerson, Serializable
 {
     @Override
     public String getName()
@@ -61,6 +63,11 @@ public class Provider implements iPerson
         return null;
     }
 
+    public static Boolean validateProviderNumberLength(int number)
+    {
+        // validate
+        return number < 1000000;
+    }
 
 
 
