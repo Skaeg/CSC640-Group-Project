@@ -1,5 +1,7 @@
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -12,14 +14,19 @@ import java.util.Set;
  */
 public class ProviderController implements iController
 {
-    Provider loggedInProvider;
-    ArrayList<Provider> providers = new ArrayList<Provider>();
+    private Provider loggedInProvider;
+    private ArrayList<Provider> providers = new ArrayList<Provider>();
     public final static String VALID = "Valid";
     public final static String INVALID = "Invalid";
+    public String providerFile;
+    private MemberController memberController;
+    private ServiceDirectory serviceDirectory;
 
-    ProviderController ()
+    ProviderController (MemberController memberController, ServiceDirectory serviceDirectory)
     {
-
+        this.memberController = memberController;
+        this.serviceDirectory = serviceDirectory;
+        providers = populateProvidersList();
     }
 
     @Override
@@ -27,10 +34,11 @@ public class ProviderController implements iController
     {
         try
         {
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            providers.add((Provider)ois.readObject());
-            ois.close();
+            providerFile = file;
+            FileInputStream fis = new FileInputStream(providerFile);
+            XMLDecoder decoder = new XMLDecoder(fis);
+            providers = (ArrayList<Provider>)decoder.readObject();
+            decoder.close();
         }
         catch(Exception e)
         {
@@ -54,7 +62,18 @@ public class ProviderController implements iController
     @Override
     public void save()
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try
+        {
+            FileOutputStream os = new FileOutputStream(providerFile);
+            XMLEncoder encoder = new XMLEncoder(os);
+            encoder.writeObject(providers);
+            encoder.close();
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Exception during serialization: " +  ex);
+            System.exit(0);
+        }
     }
 
     @Override
@@ -92,5 +111,12 @@ public class ProviderController implements iController
             }
         }
         return state;
+    }
+
+    ArrayList<Provider> populateProvidersList()
+    {
+        ArrayList<Provider> providersList = new ArrayList<Provider>();
+        providersList.add(new Provider("Steve", "1234 West Madeup Lane, Waukesha, WI 12345", 6789));
+        return providersList;
     }
 }

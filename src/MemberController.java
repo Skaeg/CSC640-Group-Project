@@ -5,6 +5,10 @@
  * Time: 7:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MemberFile implements iController
+public class MemberController implements iController
 {
+    public String getMemberStatus(int id)
+    {
+        return "remember to fill out this method";
+    }
 }

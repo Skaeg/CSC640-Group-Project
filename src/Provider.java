@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,52 +10,70 @@ import java.io.Serializable;
  */
 public class Provider implements iPerson, Serializable
 {
+    private String name;
+    private String address;
+    private int identifier;
+    private ArrayList<Service> services = new ArrayList<Service>();
+
+    public Provider()
+    {
+    }
+
+    public Provider(String name, String address, int id)
+    {
+        this.name = name;
+        this.address = address;
+        identifier = id;
+    }
+
     @Override
     public String getName()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return name;
     }
 
     @Override
     public void setName(String first, String last)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        name = first + last;
     }
 
     @Override
     public String getAddress()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return address;
     }
 
     @Override
     public void setAddress(String address)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.address = address;
     }
 
     @Override
     public int getIdentifier()
     {
-        return -1;  //To change body of implemented methods use File | Settings | File Templates.
+        return identifier;
     }
 
     @Override
     public void setIdentifier(int id)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if(validateProviderNumberLength(id))
+        {
+            identifier = id;
+        }
     }
 
     public int addMemberServiceRecord(Service service)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return -1;
+        services.add(service);
+        return -1; // TODO: what to really return here?
     }
 
     public String checkMemberStatus(int memberID)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return null;
+        return memberController.getMemberStatus(memberID);
     }
 
     public ServiceDirectory requestServiceDirectory()
