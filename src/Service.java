@@ -7,18 +7,37 @@
  */
 public class Service
 {
-    private int serviceCode = -1;
-    private String serviceName = "";
+    private int serviceCode = -1;       //6 digits
+    private String serviceName = "";      //6 digits
     private Double serviceFee = -1.0d;
+
+    public Service(String serviceName, Double serviceFee, int serviceCode)
+    {
+        this.serviceName = serviceName;
+        this.serviceFee = serviceFee;
+        this.serviceCode = serviceCode;
+    }
 
     int getServiceCode(){
       return this.serviceCode;
-}
+    }
+
+    void setServiceCode(int serviceCode){
+       this.serviceCode = serviceCode;
+    }
+
+
     String getServiceName(){
        return this.serviceName;
+    }
+    void setServiceName(String serviceName){
+        this.serviceName = serviceName;
     }
 
     Double getServiceFee(){
         return this.serviceFee;
+    }
+    void setServiceFee(Double serviceFee){
+        this.serviceFee = serviceFee;
     }
 }

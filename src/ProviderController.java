@@ -116,7 +116,26 @@ public class ProviderController implements iController
     ArrayList<Provider> populateProvidersList()
     {
         ArrayList<Provider> providersList = new ArrayList<Provider>();
-        providersList.add(new Provider("Steve", "1234 West Madeup Lane, Waukesha, WI 12345", 6789));
+
+        providersList.add(new Provider("Group Therapeutics, Inc", "2104 W Wells St", "Milwaukee", "WI", 53233,
+                111222333));
+        providersList.add(new Provider("West Allis Counseling Center", "5935 W Beloit Rd", "West Allis", "WI", 53219,
+                111222444));
+        providersList.add(new Provider("Addiction Treatment Center", "725 N. Mayfair Rd", "Wauwatosa", "WI", 53226,
+                111222555));
+        providersList.add(new Provider("Massage Works", "8436 W Lisbon Ave", "Milwaukee", "WI", 53222, 111222666));
+        providersList.add(new Provider("Natural Supplement Center", "11225 W Bluemound Rd", "Wauwatosa", "WI", 53226,
+                111222777));
+        providersList.add(new Provider("Health Energy Spot", "16735 W Greenfield Ave", "New Berlin", "WI", 53151,
+                111222888));
+        providersList.add(new Provider("Nutrition Counseling, SC", "14530 W Capitol Dr", "Brookfield", "WI", 53005,
+                111222999));
+        providersList.add(new Provider("Vitamin Hut", "2175 S. 60th St", "West Allis", "WI", 53219, 111333000));
+        providersList.add(new Provider("YMCA of New Berlin", "19555 W Lincoln Ave", "New Berlin", "WI", 53146,
+                111333111));
+        providersList.add(new Provider("Neighborhood Counseling Center", "6267 N 76th St", "Milwaukee", "WI", 53218,
+                111333222));
+
         return providersList;
     }
 }

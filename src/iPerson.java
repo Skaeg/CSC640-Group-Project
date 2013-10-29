@@ -9,8 +9,14 @@ public interface iPerson
 {
     String getName();
     void setName(String first, String last);
-    String getAddress();
-    void setAddress(String address);
+    String getStreetAddress();
+    void setStreetAddress(String streetAddress);
+    String getCity();
+    void setCity(String city);
+    String getState();
+    void setState(String state);
+    int getZipcode();
+    void setZipcode(int zipcode);
     int getIdentifier();
     void setIdentifier(int id);
 }

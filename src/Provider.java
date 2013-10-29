@@ -10,20 +10,26 @@ import java.util.ArrayList;
  */
 public class Provider implements iPerson, Serializable
 {
-    private String name;
-    private String address;
-    private int identifier;
+    private String name;          //up to 25 chars
+    private String streetAddress; //up to 25 chars
+    private String city;          //up to 14 chars
+    private String state;         //2 chars
+    private int zipcode;          //5 digits
+    private int identifier;       //9 digits
     private ArrayList<Service> services = new ArrayList<Service>();
 
     public Provider()
     {
     }
 
-    public Provider(String name, String address, int id)
+    public Provider(String name, String streetAddress, String city, String state, int zipcode , int id)
     {
         this.name = name;
-        this.address = address;
-        identifier = id;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.state = state;
+        this.zipcode = zipcode;
+        this.identifier = id;
     }
 
     @Override
@@ -39,16 +45,54 @@ public class Provider implements iPerson, Serializable
     }
 
     @Override
-    public String getAddress()
+    public String getStreetAddress()
     {
-        return address;
+        return streetAddress;
     }
 
     @Override
-    public void setAddress(String address)
+    public void setStreetAddress(String streetAddress)
     {
-        this.address = address;
+        this.streetAddress = streetAddress;
     }
+
+
+    @Override
+    public void setCity(String city)
+    {
+        this.city = city;
+    }
+
+    @Override
+    public String getCity()
+    {
+        return city;
+    }
+
+    @Override
+    public void setState(String state)
+    {
+        this.state = state;
+    }
+
+    @Override
+    public String getState()
+    {
+        return state;
+    }
+
+    @Override
+    public void setZipcode(int zipcode)
+    {
+        this.zipcode = zipcode;
+    }
+
+    @Override
+    public int getZipcode()
+    {
+        return zipcode;
+    }
+
 
     @Override
     public int getIdentifier()
