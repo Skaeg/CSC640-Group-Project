@@ -5,16 +5,15 @@ public class DataProcessingController implements iRequestReport
 {
     static iTerminal terminal  = new TerminalInputOutput(); // TODO: replace with factory?
     static final int MAX_NUMBER_OF_LOGIN_ATTEMPTS = 3;
-    static final String PROVIDER_CONTROLLER_FILE = "..\\Providers\\providers.xml";
+    static final String  PROVIDER_CONTROLLER_FILE = "providers.xml"; //"C:\\CSC640\\Providers\\providers.xml";
     static ProviderController providerController;
+    static MemberController memberController;
 
     public static void mainMenu()
     {
-        initialize();
-
+        boolean running = initializeSystem();
         iPerson  loggedIn = null;
         char menuChoice = ' ';
-        boolean running = true;
         ArrayList<String> mainMenuItems = getMainMenuItems();
 
         while(running)
@@ -28,7 +27,7 @@ public class DataProcessingController implements iRequestReport
                 {
                     case 'E' : //Enter Member Number
                         String memberNumber = terminal.getInput("Enter member Number:");
-                        if(members.containsKey(memberNumber))
+/*                        if(mem.containsKey(memberNumber))
                         {
 
                         }
@@ -36,7 +35,7 @@ public class DataProcessingController implements iRequestReport
                         {
                             terminal.sendOutput(String.format("%s is an invalid member number.", memberNumber));
                         }
-                        break;
+*/                        break;
                     case 'Q': // Exit the application
                         running = false;
                         break;
@@ -54,19 +53,31 @@ public class DataProcessingController implements iRequestReport
         handleExit();
     }
 
-    private static boolean initialize()
+    private static boolean initializeSystem()
+    {
+        return initializeProviders() | initializeMembers();
+    }
+
+    private static boolean initializeMembers()
+    {
+        Boolean membersInitialized = false;
+        memberController = new MemberController();
+        return membersInitialized;
+    }
+
+    private static boolean initializeProviders()
     {
         boolean loginSuccessful = false;
         String message = "";
         providerController = new ProviderController(PROVIDER_CONTROLLER_FILE);
         int failures = 0;
-        while(message != ProviderController.VALID && failures < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
+        while(message != ProviderController.VALID && failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
             Integer providerNumber = Integer.parseInt(terminal.getInput("Enter provider number:"));
             message = providerController.tryLogInProvider(providerNumber);
             terminal.sendOutput(message);
         }
-        if(failures == MAX_NUMBER_OF_LOGIN_ATTEMPTS)
+        if(failures >= MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
             terminal.sendOutput("Number of allowed logon attempts exceeded!");
         }

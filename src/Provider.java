@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +15,6 @@ public class Provider implements iPerson, Serializable
     private String state;         //2 chars
     private int zipcode;          //5 digits
     private int identifier;       //9 digits
-    private ArrayList<Service> services = new ArrayList<Service>();
 
     public Provider()
     {
@@ -109,17 +107,6 @@ public class Provider implements iPerson, Serializable
         }
     }
 
-    public int addMemberServiceRecord(Service service)
-    {
-        services.add(service);
-        return -1; // TODO: what to really return here?
-    }
-
-    public String checkMemberStatus(int memberID)
-    {
-        return memberController.getMemberStatus(memberID);
-    }
-
     public ServiceDirectory requestServiceDirectory()
     {
         //To change body of implemented methods use File | Settings | File Templates.
@@ -129,7 +116,7 @@ public class Provider implements iPerson, Serializable
     public static Boolean validateProviderNumberLength(int number)
     {
         // validate
-        return number < 1000000;
+        return number < 1000000000;
     }
 
 

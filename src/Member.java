@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Steve
@@ -15,6 +17,8 @@ public class Member implements iPerson
   private String state;         //2 chars
   private int zipcode;          //5 digits
   private int memberID = -1;    //9 digits
+
+    private ArrayList<Service> services = new ArrayList<Service>();
 
     Member(String first, String last){
         this.fname = first;

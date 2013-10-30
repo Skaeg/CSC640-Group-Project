@@ -7,6 +7,11 @@
  */
 public class Administrator implements iPerson, iRequestReport
 {
+    public Administrator()
+    {
+        super();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     @Override
     public String getName()
     {
@@ -20,13 +25,49 @@ public class Administrator implements iPerson, iRequestReport
     }
 
     @Override
-    public String getAddress()
+    public String getStreetAddress()
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void setAddress(String address)
+    public void setStreetAddress(String streetAddress)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getCity()
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setCity(String city)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getState()
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setState(String state)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public int getZipcode()
+    {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void setZipcode(int zipcode)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }

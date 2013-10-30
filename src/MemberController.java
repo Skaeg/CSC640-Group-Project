@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,10 +10,14 @@ import java.util.ArrayList;
  */
 public class MemberController implements iController
 {
-
+    ArrayList<Member> members;
+    public MemberController ()
+    {
+        members = populateMembersList();
+    }
     public String getMemberStatus(int id)
     {
-        return "remember to fill out this method";
+        return "Not yet implemented.";
     }
 
 
@@ -38,4 +43,45 @@ public class MemberController implements iController
     }
 
 
+    @Override
+    public void open(String file)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void close()
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Set<iPerson> read()
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void save()
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public iPerson find(int id)
+    {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void add(iPerson toAdd)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void remove(int id)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

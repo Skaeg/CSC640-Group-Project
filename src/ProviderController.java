@@ -1,8 +1,10 @@
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -16,28 +18,43 @@ public class ProviderController implements iController
 {
     private Provider loggedInProvider;
     private ArrayList<Provider> providers = new ArrayList<Provider>();
+    private HashMap<Integer, Provider> testProviders = new HashMap<Integer, Provider>();
     public final static String VALID = "Valid";
     public final static String INVALID = "Invalid";
-    public String providerFile;
+    public File providerFile;
     private MemberController memberController;
     private ServiceDirectory serviceDirectory;
 
-    ProviderController (MemberController memberController, ServiceDirectory serviceDirectory)
+    public ProviderController (MemberController memberController, ServiceDirectory serviceDirectory)
     {
         this.memberController = memberController;
         this.serviceDirectory = serviceDirectory;
         providers = populateProvidersList();
     }
 
+    public ProviderController(String file)
+    {
+        open(file);
+    }
     @Override
     public void open(String file)
     {
         try
         {
-            providerFile = file;
+            providerFile = new File(file);
+            // if the provider file does not exist, load our canned one.
+            if(!providerFile.exists())
+            {
+                providers = populateProvidersList();
+                for(Provider pro : providers)
+                {
+                    testProviders.put(pro.getIdentifier(), pro);
+                }
+                save();
+            }
             FileInputStream fis = new FileInputStream(providerFile);
             XMLDecoder decoder = new XMLDecoder(fis);
-            providers = (ArrayList<Provider>)decoder.readObject();
+            testProviders = (HashMap<Integer, Provider>)decoder.readObject();
             decoder.close();
         }
         catch(Exception e)
@@ -64,9 +81,14 @@ public class ProviderController implements iController
     {
         try
         {
+            if(!providerFile.exists())
+            {
+                providerFile.createNewFile();
+            }
+            //String fullPath = file.getAbsolutePath();
             FileOutputStream os = new FileOutputStream(providerFile);
             XMLEncoder encoder = new XMLEncoder(os);
-            encoder.writeObject(providers);
+            encoder.writeObject(testProviders);
             encoder.close();
         }
         catch (Exception ex)
@@ -111,6 +133,17 @@ public class ProviderController implements iController
             }
         }
         return state;
+    }
+
+    public int addMemberServiceRecord(Service service)
+    {
+        // TODO: add service to member
+        return -1; // TODO: what to really return here?
+    }
+
+    public String checkMemberStatus(int memberID)
+    {
+        return memberController.getMemberStatus(memberID);
     }
 
     ArrayList<Provider> populateProvidersList()
