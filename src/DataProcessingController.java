@@ -6,6 +6,7 @@ public class DataProcessingController implements iRequestReport
     static iTerminal terminal  = new TerminalInputOutput(); // TODO: replace with factory?
     static final int MAX_NUMBER_OF_LOGIN_ATTEMPTS = 3;
     static final String  PROVIDER_CONTROLLER_FILE = "providers.xml"; //"C:\\CSC640\\Providers\\providers.xml";
+    static final String  MEMBER_CONTROLLER_FILE = "members.xml"; //"C:\\CSC640\\Providers\\providers.xml";
     static ProviderController providerController;
     static MemberController memberController;
 
@@ -55,14 +56,14 @@ public class DataProcessingController implements iRequestReport
 
     private static boolean initializeSystem()
     {
-        return initializeProviders() | initializeMembers();
+        return initializeMembers() | initializeProviders();
     }
 
     private static boolean initializeMembers()
     {
         Boolean membersInitialized = false;
-        memberController = new MemberController();
-        return membersInitialized;
+        memberController = new MemberController(MEMBER_CONTROLLER_FILE);
+        return memberController.memberFileOpen();
     }
 
     private static boolean initializeProviders()

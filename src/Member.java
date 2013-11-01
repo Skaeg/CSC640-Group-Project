@@ -18,7 +18,8 @@ public class Member implements iPerson
   private int zipcode;          //5 digits
   private int memberID = -1;    //9 digits
 
-    private ArrayList<Service> services = new ArrayList<Service>();
+  // I believe this can be removed -- Mark
+  //  private ArrayList<Service> services = new ArrayList<Service>();
 
     Member(String first, String last){
         this.fname = first;
