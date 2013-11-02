@@ -33,8 +33,9 @@ public class MemberController implements iController
     public boolean memberFileOpen(){
         return memberFile != null? true:false;
     }
+
     @Override
-    public void open(String file)
+    public Boolean open(String file)
     {
         try
         {
@@ -43,7 +44,7 @@ public class MemberController implements iController
             if(!memberFile.exists())
             {
                 testMembers = populateMembersList();
-                save();
+                save(memberFile.getName());
             }
             else
             {
@@ -56,30 +57,15 @@ public class MemberController implements iController
         catch(Exception e)
         {
             System.out.println("Exception during deserialization: " +  e);
-            System.exit(0);
+         //   System.exit(0);
+            return false;
         }
+        return true;
     }
 
     @Override
-    public void close()
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public Boolean save(String file) {
 
-    @Override
-    public Set<iPerson> read()
-    {          Set<iPerson> allMembers = new HashSet<iPerson>();
-
-        for(Integer i : testMembers.keySet()){
-            allMembers.add(testMembers.get(i));
-        }
-
-        return  allMembers;
-    }
-
-    @Override
-    public void save()
-    {
         try
         {
             if(!memberFile.exists())
@@ -95,8 +81,20 @@ public class MemberController implements iController
         catch (Exception ex)
         {
             System.out.println("Exception during serialization: " +  ex);
-            System.exit(0);
+           // System.exit(0);
+            return false;
         }
+        return true;
+    }
+
+    public Set<iPerson> getAllMembers()
+    {          Set<iPerson> allMembers = new HashSet<iPerson>();
+
+        for(Integer i : testMembers.keySet()){
+            allMembers.add(testMembers.get(i));
+        }
+
+        return  allMembers;
     }
 
     @Override
@@ -106,19 +104,31 @@ public class MemberController implements iController
     }
 
     @Override
-    public void add(iPerson toAdd)
+    public Boolean add(iPerson toAdd)
     {
         // Do we loss anything by type casting to a member?
         testMembers.put(toAdd.getIdentifier(),(Member)toAdd);
-        save();
-
+        return save(memberFile.getName());
     }
 
     @Override
-    public void remove(int id)
+    public Boolean remove(int id)
     {
-        testMembers.remove(id);
-        save();
+        if(testMembers.remove(id) != null){
+           return save(memberFile.getName());
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean addServiceRecordToMember(int memberId, Service service){
+        Member member = testMembers.get(memberId);
+        if(member == null){
+          return false;
+        }
+        member.addServiceToList(service);
+        return true;
     }
 
 

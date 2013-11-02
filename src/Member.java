@@ -1,4 +1,6 @@
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,6 +17,7 @@ public class Member implements iPerson, Serializable
   private String state;         //2 chars
   private int zipcode;          //5 digits
   private int memberID = -1;    //9 digits
+  private ArrayList<Service> listOfServices;
 
     public Member (){}
 
@@ -26,6 +29,7 @@ public class Member implements iPerson, Serializable
         this.state = state;
         this.zipcode = zipcode;
         this.memberID = id;
+        listOfServices = new ArrayList<Service>();
     }
 
     @Override
@@ -98,4 +102,12 @@ public class Member implements iPerson, Serializable
     public void setIdentifier(int id) {
         this.memberID = id;
     }
+
+    public void addServiceToList(Service service){
+        this.listOfServices.add(service);
+    }
+    public List getListOfServices(){
+        return this.listOfServices;
+    }
 }
+

@@ -171,8 +171,12 @@ public class ProviderController implements iController
         }
         return state;
     }
+   // Changed MemberController to include a method addMeberServiceRecordToMember
+   //
+   // Steve let me know if you are good with this? --Mark
 
-    public int addMemberServiceRecord(int memberID, Service service)
+
+   /* public int addMemberServiceRecord(int memberID, Service service)
     {
         return addMemberServiceRecord((Member)memberController.find(memberID), service);
     }
@@ -182,6 +186,12 @@ public class ProviderController implements iController
 
         return memberController.addServiceRecord(service); // TODO: what to really return here?
     }
+*/
+   public Boolean addMemberServiceRecord(int memberID, Service service)
+   {
+       return memberController.addServiceRecordToMember(memberID, service);
+   }
+
 
     public String checkMemberStatus(int memberID)
     {
