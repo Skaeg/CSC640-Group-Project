@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,29 +7,20 @@ import java.util.ArrayList;
  * Time: 4:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Member implements iPerson
+public class Member implements iPerson, Serializable
 {
-  private String fname = "";
-  private String lname = "";
-  //private String address = "not entered";
+  private String name;
   private String streetAddress; //up to 25 chars
   private String city;          //up to 14 chars
   private String state;         //2 chars
   private int zipcode;          //5 digits
   private int memberID = -1;    //9 digits
 
-  // I believe this can be removed -- Mark
-  //  private ArrayList<Service> services = new ArrayList<Service>();
-
-    Member(String first, String last){
-        this.fname = first;
-        this.lname = last;
-    }
+    public Member (){}
 
     public Member(String fname, String lname, String streetAddress, String city, String state, int zipcode , int id)
     {
-        this.fname = fname;
-        this.lname = lname;
+        this.name = String.format("%s %s", fname, lname);
         this.streetAddress = streetAddress;
         this.city = city;
         this.state = state;
@@ -40,28 +31,14 @@ public class Member implements iPerson
     @Override
     public String getName()
     {
-         return this.fname + " " + this.lname;  //To change body of implemented methods use File | Settings | File Templates.
+         return name;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void setName(String first, String last)
     {
-        this.fname = first;
-        this.lname = last;
+        String.format("%s %s", first, last);
     }
-
-    /*
-    @Override
-    public String getAddress()
-    {
-        return this.address;
-    }
-
-    @Override
-    public void setAddress(String address) {
-        this.address = address;
-    }
-    */
 
     @Override
     public String getStreetAddress()

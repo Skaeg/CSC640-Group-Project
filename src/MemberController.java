@@ -44,7 +44,9 @@ public class MemberController implements iController
             {
                 testMembers = populateMembersList();
                 save();
-            }else{
+            }
+            else
+            {
                 FileInputStream fis = new FileInputStream(memberFile);
                 XMLDecoder decoder = new XMLDecoder(fis);
                 testMembers = (HashMap<Integer, Member>)decoder.readObject();
@@ -89,7 +91,6 @@ public class MemberController implements iController
             XMLEncoder encoder = new XMLEncoder(os);
             encoder.writeObject(testMembers);
             encoder.close();
-            return;
         }
         catch (Exception ex)
         {
@@ -122,9 +123,9 @@ public class MemberController implements iController
 
 
 
-    HashMap<Integer, Member> populateMembersList()
+    private HashMap<Integer, Member> populateMembersList()
     {
-        testMembers = new HashMap<Integer,Member>();
+        HashMap<Integer,Member> testMembers = new HashMap<Integer,Member>();
 
         testMembers.put(333222333, new Member("Linda", "Schaefer", "4103 N 62nd St", "Milwaukee", "WI", 53213, 333222333));
         testMembers.put(333222334, new Member("Matt", "Pagels", "733 S. 88th St", "West Allis", "WI", 53214, 333222334));
