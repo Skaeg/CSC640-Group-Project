@@ -5,72 +5,71 @@ public class DataProcessingController implements iRequestReport
 {
     static iTerminal terminal  = new TerminalInputOutput(); // TODO: replace with factory?
     static final int MAX_NUMBER_OF_LOGIN_ATTEMPTS = 3;
-    static final String  PROVIDER_CONTROLLER_FILE = "providers.xml"; //"C:\\CSC640\\Providers\\providers.xml";
-    static final String  MEMBER_CONTROLLER_FILE = "members.xml"; //"C:\\CSC640\\Providers\\providers.xml";
+    static final String  PROVIDER_CONTROLLER_FILE = "providers.xml";
+    static final String  MEMBER_CONTROLLER_FILE = "members.xml";
+    static final String  ADMINISTRATOR_CONTROLLER_FILE = "administrators.xml";
+    static final String  SERVICE_DIRECTORY_FILE = "serviceDirectory.xml";
     static ProviderController providerController;
     static MemberController memberController;
+    //static AdministratorController administratorController;
+    static ServiceDirectory serviceDirectory;
 
     public static void mainMenu()
     {
         boolean running = initializeSystem();
-        iPerson  loggedIn = null;
+        iPerson  loggedIn  = null;
         char menuChoice = ' ';
         ArrayList<String> mainMenuItems = getMainMenuItems();
 
         while(running)
         {
-            try
+            loggedIn = loginProvider();
+            while(loggedIn != null)
             {
-                displayMenu(mainMenuItems);
-                menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
-
-                switch (menuChoice)
+                try
                 {
-                    case 'E' : //Enter Member Number
-                        String memberNumber = terminal.getInput("Enter member Number:");
-/*                        if(mem.containsKey(memberNumber))
-                        {
+                    displayMenu(mainMenuItems);
+                    menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
 
-                        }
-                        else
-                        {
-                            terminal.sendOutput(String.format("%s is an invalid member number.", memberNumber));
-                        }
-*/                        break;
-                    case 'Q': // Exit the application
-                        running = false;
-                        break;
-                    default:
-                        terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
-                        break;
+                    switch (menuChoice)
+                    {
+                        case 'E' : //Enter Member Number
+                            String memberNumber = terminal.getInput("Enter member Number:");
+    /*                        if(mem.containsKey(memberNumber))
+                            {
+
+                            }
+                            else
+                            {
+                                terminal.sendOutput(String.format("%s is an invalid member number.", memberNumber));
+                            }
+    */                        break;
+                        case 'L': // logout provider
+                            providerController.logOutProvider();
+                            loggedIn = null;
+                            break;
+                        case 'Q': // Exit the application
+                            running = false;
+                            break;
+                        default:
+                            terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
+                            break;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                // TODO: log exception here and display error message
-                terminal.sendOutput(ex.getMessage());
+                catch (Exception ex)
+                {
+                    // TODO: log exception here and display error message
+                    terminal.sendOutput(ex.getMessage());
+                }
             }
         }
         handleExit();
     }
 
-    private static boolean initializeSystem()
+    private static iPerson loginProvider()
     {
-        return initializeMembers() | initializeProviders();
-    }
-
-    private static boolean initializeMembers()
-    {
-        Boolean membersInitialized = false;
-        memberController = new MemberController(MEMBER_CONTROLLER_FILE);
-        return memberController.memberFileOpen();
-    }
-
-    private static boolean initializeProviders()
-    {
-        boolean loginSuccessful = false;
+        iPerson loggedinProvider = null;
         String message = "";
-        providerController = new ProviderController(PROVIDER_CONTROLLER_FILE);
         int failures = 0;
         while(message != ProviderController.VALID && failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
@@ -84,9 +83,41 @@ public class DataProcessingController implements iRequestReport
         }
         else
         {
-            loginSuccessful = true;
+            loggedinProvider = providerController.getLoggedInProvider();
         }
-        return loginSuccessful;
+        return loggedinProvider;
+    }
+
+    private static boolean initializeSystem()
+    {
+        return initializeMembers() & initializeAdministrators() & initializeServiceDirectory() & initializeProviders();
+    }
+
+    private static boolean initializeMembers()
+    {
+        Boolean membersInitialized = false;
+        memberController = new MemberController(MEMBER_CONTROLLER_FILE);
+        return memberController.memberFileOpen();
+    }
+
+    private static boolean initializeProviders()
+    {
+        providerController = new ProviderController(PROVIDER_CONTROLLER_FILE, memberController, serviceDirectory);
+        return providerController.providerFileOpen();
+    }
+
+    private static boolean initializeAdministrators()
+    {
+        Boolean initializationSuccessful = false;
+
+        return initializationSuccessful;
+    }
+
+    private static boolean initializeServiceDirectory()
+    {
+        Boolean initializationSuccessful = false;
+
+        return initializationSuccessful;
     }
 
     private static ArrayList<String> getMainMenuItems()

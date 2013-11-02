@@ -39,7 +39,7 @@ public class Provider implements iPerson, Serializable
     @Override
     public void setName(String first, String last)
     {
-        name = first + last;
+        name = String.format("%s %s", first, last);
     }
 
     @Override
@@ -53,7 +53,6 @@ public class Provider implements iPerson, Serializable
     {
         this.streetAddress = streetAddress;
     }
-
 
     @Override
     public void setCity(String city)
@@ -101,24 +100,14 @@ public class Provider implements iPerson, Serializable
     @Override
     public void setIdentifier(int id)
     {
-        if(validateProviderNumberLength(id))
+        if(validateIdentifier(id))
         {
             identifier = id;
         }
     }
 
-    public ServiceDirectory requestServiceDirectory()
+    public static Boolean validateIdentifier(int id)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return null;
+        return id < 1000000000;
     }
-
-    public static Boolean validateProviderNumberLength(int number)
-    {
-        // validate
-        return number < 1000000000;
-    }
-
-
-
 }

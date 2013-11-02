@@ -1,5 +1,3 @@
-import java.util.Set;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Steve
@@ -9,11 +7,9 @@ import java.util.Set;
  */
 public interface iController
 {
-    void open(String file);
-    void close();
-    Set<iPerson> read();
-    void save();
+    Boolean open(String file);
+    Boolean save(String file);
     iPerson find(int id);
-    void add(iPerson toAdd);
-    void remove(int id);
+    Boolean add(iPerson toAdd);
+    Boolean remove(int id);
 }
