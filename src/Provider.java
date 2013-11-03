@@ -1,4 +1,6 @@
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,7 +9,7 @@ import java.io.Serializable;
  * Time: 4:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Provider implements iPerson, Serializable
+public class Provider implements iPerson, iEmployee, Serializable
 {
     private String name;          //up to 25 chars
     private String streetAddress; //up to 25 chars
@@ -104,6 +106,18 @@ public class Provider implements iPerson, Serializable
         {
             identifier = id;
         }
+    }
+
+    @Override
+    public List<String> getMenuItems()
+    {
+        ArrayList<String> menuItems = new ArrayList<String>();
+        menuItems.add("{P}rovide Service");
+        menuItems.add("{A}dd Service To Member Account");
+        menuItems.add("{E}nter Member Number");
+        menuItems.add("{L}ogout Provider");
+        menuItems.add("{Q}uit");
+        return menuItems;
     }
 
     public static Boolean validateIdentifier(int id)

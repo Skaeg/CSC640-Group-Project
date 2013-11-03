@@ -17,13 +17,16 @@ public class DataProcessingController implements iRequestReport
     public static void mainMenu()
     {
         boolean running = initializeSystem();
-        iPerson  loggedIn  = null;
+        iEmployee loggedIn  = null;
         char menuChoice = ' ';
-        ArrayList<String> mainMenuItems = getMainMenuItems();
 
         while(running)
         {
-            loggedIn = loginProvider();
+            iLogged[] loggedControllerArray = new iLogged[1];
+            // using the loggedControllerArray to act like an out statement in C#
+            loggedIn = loginEmployee(loggedControllerArray);
+            iLogged loggedController = loggedControllerArray[0];
+            List<String> mainMenuItems = loggedIn.getMenuItems();
             while(loggedIn != null)
             {
                 try
@@ -45,10 +48,12 @@ public class DataProcessingController implements iRequestReport
                             }
     */                        break;
                         case 'L': // logout provider
-                            providerController.logOutProvider();
+                            loggedController.logout();
                             loggedIn = null;
                             break;
                         case 'Q': // Exit the application
+                            loggedController.logout();
+                            loggedIn = null;
                             running = false;
                             break;
                         default:
@@ -66,26 +71,41 @@ public class DataProcessingController implements iRequestReport
         handleExit();
     }
 
-    private static iPerson loginProvider()
+    // using the array in a similar fashion to a C# out statement
+    private static iEmployee loginEmployee(iLogged[] loggedController)
     {
-        iPerson loggedinProvider = null;
+        iEmployee loggedin = null;
         String message = "";
         int failures = 0;
-        while(message != ProviderController.VALID && failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
+
+        while(failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
-            Integer providerNumber = Integer.parseInt(terminal.getInput("Enter provider number:"));
-            message = providerController.tryLogInProvider(providerNumber);
+            Integer providerNumber = Integer.parseInt(terminal.getInput("Enter employeee id number:"));
+            if(providerController.tryLogIn(providerNumber) != ProviderController.VALID)
+            {
+                loggedController[0] = providerController;
+                break;
+            }
+/*            else if(administratorController.tryLogIn(providerNumber) != ProviderController.VALID)
+            {
+                loggedController[0] = administratorController;
+                break;
+            }
+*/
             terminal.sendOutput(message);
         }
+
+
         if(failures >= MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
             terminal.sendOutput("Number of allowed logon attempts exceeded!");
+            handleExit();
         }
         else
         {
-            loggedinProvider = providerController.getLoggedInProvider();
+            loggedin = loggedController[0].getLoggedIn();
         }
-        return loggedinProvider;
+        return loggedin;
     }
 
     private static boolean initializeSystem()
@@ -108,7 +128,7 @@ public class DataProcessingController implements iRequestReport
 
     private static boolean initializeAdministrators()
     {
-        Boolean initializationSuccessful = false;
+        Boolean initializationSuccessful = true;
 
         return initializationSuccessful;
     }
@@ -116,19 +136,11 @@ public class DataProcessingController implements iRequestReport
     private static boolean initializeServiceDirectory()
     {
         Boolean initializationSuccessful = false;
-
-        return initializationSuccessful;
+        serviceDirectory = new ServiceDirectory(SERVICE_DIRECTORY_FILE);
+        return serviceDirectory.serviceDirectoryFileOpen();
     }
 
-    private static ArrayList<String> getMainMenuItems()
-    {
-        ArrayList<String> menuItems = new ArrayList<String>();
-        menuItems.add("{E}nter Member Number");
-        menuItems.add("{Q}uit");
-        return menuItems;
-    }
-
-    private static void displayMenu(ArrayList<String> menuItems)
+    private static void displayMenu(List<String> menuItems)
     {
         List<String> responses = new ArrayList<String>();
         for(String prompt : menuItems)
@@ -141,7 +153,6 @@ public class DataProcessingController implements iRequestReport
     {
         System.exit(0);
     }
-
 
     @Override
     public void requestReport(int reportType)

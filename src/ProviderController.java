@@ -13,9 +13,9 @@ import java.util.HashMap;
  * Time: 7:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ProviderController implements iController
+public class ProviderController implements iController, iLogged
 {
-    private Provider loggedInProvider;
+    private iEmployee loggedInProvider;
     private HashMap<Integer, Provider> providers = new HashMap<Integer, Provider>();
     private File providerFile = null;
     public final static String VALID = "Valid";
@@ -153,17 +153,13 @@ public class ProviderController implements iController
         return removeSuccessful;
     }
 
-    public Provider getLoggedInProvider()
-    {
-        return loggedInProvider;
-    }
-
-    public String tryLogInProvider(int providerID)
+    @Override
+    public String tryLogIn(int id)
     {
         String state = INVALID;
-        if(Provider.validateIdentifier(providerID))
+        if(Provider.validateIdentifier(id))
         {
-            loggedInProvider = (Provider)find(providerID);
+            loggedInProvider = (Provider)find(id);
             if(loggedInProvider != null)
             {
                 state = VALID;
@@ -171,27 +167,23 @@ public class ProviderController implements iController
         }
         return state;
     }
-   // Changed MemberController to include a method addMeberServiceRecordToMember
-   //
-   // Steve let me know if you are good with this? --Mark
 
-
-   /* public int addMemberServiceRecord(int memberID, Service service)
+    @Override
+    public iEmployee getLoggedIn()
     {
-        return addMemberServiceRecord((Member)memberController.find(memberID), service);
+        return loggedInProvider;
     }
 
-    public int addMemberServiceRecord(Member member, Service service)
+    @Override
+    public void logout()
     {
-
-        return memberController.addServiceRecord(service); // TODO: what to really return here?
+        loggedInProvider = null;
     }
-*/
-   public Boolean addMemberServiceRecord(int memberID, Service service)
+
+    public Boolean addMemberServiceRecord(int memberID, Service service)
    {
        return memberController.addServiceRecordToMember(memberID, service);
    }
-
 
     public String checkMemberStatus(int memberID)
     {
@@ -214,11 +206,6 @@ public class ProviderController implements iController
         providersList.put(111333222, new Provider("Neighborhood Counseling Center", "6267 N 76th St", "Milwaukee", "WI", 53218, 111333222));
 
         return providersList;
-    }
-
-    public void logOutProvider()
-    {
-        loggedInProvider = null;
     }
 
     public boolean providerFileOpen()
