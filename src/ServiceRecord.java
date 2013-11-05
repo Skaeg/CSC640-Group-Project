@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.Calendar;
 
 /**
@@ -7,8 +8,7 @@ import java.util.Calendar;
  * Time: 5:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceRecord
-{
+public class ServiceRecord implements Serializable {
     private int providerID;
     private int memberID;
     private int serviceCode;
