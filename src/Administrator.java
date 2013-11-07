@@ -7,82 +7,112 @@
  */
 public class Administrator implements iPerson, iRequestReport
 {
+    private String name;          //up to 25 chars
+    private String streetAddress; //up to 25 chars
+    private String city;          //up to 14 chars
+    private String state;         //2 chars
+    private int zipcode;          //5 digits
+    private int identifier;       //9 digits
+
     public Administrator()
     {
         super();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
+    public Administrator(String name, String streetAddress, String city, String state, int zipcode , int id)
+    {
+        this.name = name;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.state = state;
+        this.zipcode = zipcode;
+        this.identifier = id;
+    }
+
     @Override
     public String getName()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return name;
     }
 
     @Override
     public void setName(String first, String last)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        name = String.format("%s %s", first, last);
     }
 
     @Override
     public String getStreetAddress()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return streetAddress;
     }
 
     @Override
     public void setStreetAddress(String streetAddress)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getCity()
-    {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        this.streetAddress = streetAddress;
     }
 
     @Override
     public void setCity(String city)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.city = city;
     }
 
     @Override
-    public String getState()
+    public String getCity()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return city;
     }
 
     @Override
     public void setState(String state)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.state = state;
     }
 
     @Override
-    public int getZipcode()
+    public String getState()
     {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return state;
     }
 
     @Override
     public void setZipcode(int zipcode)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.zipcode = zipcode;
     }
+
+    @Override
+    public int getZipcode()
+    {
+        return zipcode;
+    }
+
 
     @Override
     public int getIdentifier()
     {
-        return -1;  //To change body of implemented methods use File | Settings | File Templates.
+        return identifier;
     }
 
     @Override
     public void setIdentifier(int id)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if(validateIdentifier(id))
+        {
+            identifier = id;
+        }
     }
+
+    public static Boolean validateIdentifier(int id)
+    {
+        return id < 1000000000;
+    }
+
+
+    //// up to here
+
 
    public int saveMember(Member m)
     {

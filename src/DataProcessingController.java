@@ -11,7 +11,7 @@ public class DataProcessingController implements iRequestReport
     static final String  SERVICE_DIRECTORY_FILE = "serviceDirectory.xml";
     static ProviderController providerController;
     static MemberController memberController;
-    //static AdministratorController administratorController;
+    static AdministratorController administratorController;
     static ServiceDirectory serviceDirectory;
 
     public static void mainMenu()
@@ -128,9 +128,15 @@ public class DataProcessingController implements iRequestReport
 
     private static boolean initializeAdministrators()
     {
-        Boolean initializationSuccessful = true;
+        Boolean administratorsInitialized = false;
+        administratorController = new AdministratorController(ADMINISTRATOR_CONTROLLER_FILE);
+        return administratorController.administratorFileOpen();
 
-        return initializationSuccessful;
+
+
+        //Boolean initializationSuccessful = true;
+
+        //return initializationSuccessful;
     }
 
     private static boolean initializeServiceDirectory()
