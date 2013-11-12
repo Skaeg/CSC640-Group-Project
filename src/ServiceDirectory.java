@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -163,5 +165,15 @@ public class ServiceDirectory
     public boolean serviceDirectoryFileOpen()
     {
         return serviceDirectoryFile != null ? true : false;
+    }
+
+    public Set<Service> getAllServices()
+    {          Set<Service> allServices = new HashSet<Service>();
+
+        for(Integer i : services.keySet()){
+            allServices.add(services.get(i));
+        }
+
+        return  allServices;
     }
 }

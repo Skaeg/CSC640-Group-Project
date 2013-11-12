@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: uidl0054
+ * User: Mark Noller
  * Date: 11/4/13
  * Time: 7:48 PM
  * To change this template use File | Settings | File Templates.
@@ -37,7 +37,10 @@ public class ServiceRecordController {
         try {
             serviceRecordFile = new File(file);
             // if the provider file does not exist, load our canned one.
-            if (serviceRecordFile.exists()) {
+            if (!serviceRecordFile.exists()) {
+             saveToFile(file,createMockServiceRecords());
+            }
+
                 FileInputStream fis = new FileInputStream(serviceRecordFile);
                 XMLDecoder decoder = new XMLDecoder(fis);
                 ArrayList<ServiceRecord> tempServiceList = (ArrayList<ServiceRecord>) decoder.readObject();
@@ -48,7 +51,7 @@ public class ServiceRecordController {
                 for (ServiceRecord record : tempServiceList) {
                     loadServiceRecordToMemory(record);
                 }
-            }
+
         } catch (Exception e) {
             System.out.println("Exception during deserialization: " + e);
             //   System.exit(0);
@@ -142,5 +145,19 @@ public class ServiceRecordController {
         }
 
         return tempSet;
+    }
+
+    private  ArrayList<ServiceRecord> createMockServiceRecords(){
+        ArrayList<ServiceRecord> mockServiceRecords = new  ArrayList<ServiceRecord>();
+     /*   (int _providerID, int _memberID, int _serviceCode, String _comments,
+                Calendar _dateAndTimeServiceEntered, Calendar _dateOfService) */
+        Calendar cal1 = new GregorianCalendar(2013,10,30,9,30);
+        Calendar cal2 = new GregorianCalendar(2013,10,25);
+
+        for(int x = 0; x < 20; x++){
+         mockServiceRecords.add(new ServiceRecord(x, x+100, x + 1000, "Comment " + x, cal1, cal2));
+        }
+
+        return mockServiceRecords;
     }
 }
