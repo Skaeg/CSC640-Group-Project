@@ -20,7 +20,7 @@ public class ServiceRecordController {
     // HashMap<ProviderID,Set<indexID>
     private HashMap<Integer, Set<Integer>> providerServicesMap;
 
-    private File serviceRecordFile;
+    private File serviceRecordFile = null;
     private String fileName;
 
     public ServiceRecordController(String file) {
@@ -82,7 +82,6 @@ public class ServiceRecordController {
         return true;
     }
 
-
     public boolean saveNewServiceRecord(ServiceRecord serviceRecord) {
         if (!loadServiceRecordToMemory(serviceRecord)) {
             return false;
@@ -115,7 +114,6 @@ public class ServiceRecordController {
         }
     }
 
-
     //Returns a Set of ServiceRecords for a given provider
     public Set<ServiceRecord> getListOfServiceRecordsByProvider(int providerID) {
 
@@ -147,17 +145,24 @@ public class ServiceRecordController {
         return tempSet;
     }
 
-    private  ArrayList<ServiceRecord> createMockServiceRecords(){
+    private  ArrayList<ServiceRecord> createMockServiceRecords()
+    {
         ArrayList<ServiceRecord> mockServiceRecords = new  ArrayList<ServiceRecord>();
      /*   (int _providerID, int _memberID, int _serviceCode, String _comments,
                 Calendar _dateAndTimeServiceEntered, Calendar _dateOfService) */
-        Calendar cal1 = new GregorianCalendar(2013,10,30,9,30);
-        Calendar cal2 = new GregorianCalendar(2013,10,25);
+        SimpleDateTime cal1 = new SimpleDateTime(2013, 10,30,9,30,0);
+        SimpleDateTime cal2 = new SimpleDateTime(2013,10,25);
 
-        for(int x = 0; x < 20; x++){
+        for(int x = 0; x < 20; x++)
+        {
          mockServiceRecords.add(new ServiceRecord(x, x+100, x + 1000, "Comment " + x, cal1, cal2));
         }
 
         return mockServiceRecords;
+    }
+
+    public boolean serviceRecordFileOpen()
+    {
+        return serviceRecordFile != null ? true : false;
     }
 }

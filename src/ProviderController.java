@@ -180,11 +180,6 @@ public class ProviderController implements iController, iLogged
         loggedInProvider = null;
     }
 
-    public Boolean addMemberServiceRecord(int memberID, Service service)
-   {
-       return memberController.addServiceRecordToMember(memberID, service);
-   }
-
     public String checkMemberStatus(int memberID)
     {
         return memberController.getMemberStatus(memberID);

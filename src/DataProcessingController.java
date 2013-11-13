@@ -9,10 +9,13 @@ public class DataProcessingController implements iRequestReport
     static final String  MEMBER_CONTROLLER_FILE = "members.xml";
     static final String  ADMINISTRATOR_CONTROLLER_FILE = "administrators.xml";
     static final String  SERVICE_DIRECTORY_FILE = "serviceDirectory.xml";
+    static final String  SERVICE_RECORDS_FILE = "serviceRecords.xml";
+
     static ProviderController providerController;
     static MemberController memberController;
     static AdministratorController administratorController;
     static ServiceDirectory serviceDirectory;
+    static ServiceRecordController serviceRecordController;
 
     public static void mainMenu()
     {
@@ -80,18 +83,20 @@ public class DataProcessingController implements iRequestReport
 
         while(failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
-            Integer providerNumber = Integer.parseInt(terminal.getInput("Enter employeee id number:"));
-            if(providerController.tryLogIn(providerNumber) != ProviderController.VALID)
+            Integer providerNumber = Integer.parseInt(terminal.getInput("Enter employee id number:"));
+            if(providerController.tryLogIn(providerNumber) == ProviderController.VALID)
             {
                 loggedController[0] = providerController;
+                message = "Valid";
                 break;
             }
-/*            else if(administratorController.tryLogIn(providerNumber) != ProviderController.VALID)
+            else if(administratorController.tryLogIn(providerNumber) == ProviderController.VALID)
             {
                 loggedController[0] = administratorController;
+                message = "Valid";
                 break;
             }
-*/
+
             terminal.sendOutput(message);
         }
 
@@ -110,7 +115,7 @@ public class DataProcessingController implements iRequestReport
 
     private static boolean initializeSystem()
     {
-        return initializeMembers() & initializeAdministrators() & initializeServiceDirectory() & initializeProviders();
+        return initializeMembers() & initializeAdministrators() & initializeServiceDirectory() & initializeProviders() & initializeServiceRecords();
     }
 
     private static boolean initializeMembers()
@@ -144,6 +149,13 @@ public class DataProcessingController implements iRequestReport
         Boolean initializationSuccessful = false;
         serviceDirectory = new ServiceDirectory(SERVICE_DIRECTORY_FILE);
         return serviceDirectory.serviceDirectoryFileOpen();
+    }
+
+    private static boolean initializeServiceRecords()
+    {
+        Boolean initializationSuccessful = false;
+        serviceRecordController = new ServiceRecordController(SERVICE_RECORDS_FILE);
+        return serviceRecordController.serviceRecordFileOpen();
     }
 
     private static void displayMenu(List<String> menuItems)

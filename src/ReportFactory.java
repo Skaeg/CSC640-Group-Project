@@ -12,6 +12,7 @@ public class ReportFactory
         iReport reportRequested = null;
         switch (reportTypeRequested)
         {
+
             default:
                 break;
         }

@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.Calendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,16 +7,17 @@ import java.util.Calendar;
  * Time: 5:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceRecord implements Serializable {
+public class ServiceRecord implements Serializable
+{
     private int providerID;
     private int memberID;
     private int serviceCode;
     private String comments;
-    private Calendar dateAndTimeServiceEntered;
-    private Calendar dateOfService;
+    private SimpleDateTime dateAndTimeServiceEntered;
+    private SimpleDateTime dateOfService;
 
     public ServiceRecord(int _providerID, int _memberID, int _serviceCode, String _comments,
-                         Calendar _dateAndTimeServiceEntered, Calendar _dateOfService)
+                         SimpleDateTime _dateAndTimeServiceEntered, SimpleDateTime _dateOfService)
     {
         providerID = _providerID;
         memberID = _memberID;
@@ -46,12 +46,12 @@ public class ServiceRecord implements Serializable {
         return comments;
     }
 
-    public Calendar getDateAndTimeServiceEntered()
+    public SimpleDateTime getDateAndTimeServiceEntered()
     {
         return dateAndTimeServiceEntered;
     }
 
-    public Calendar getDateOfService()
+    public SimpleDateTime getDateOfService()
     {
         return dateOfService;
     }

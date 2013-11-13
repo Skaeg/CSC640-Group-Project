@@ -122,17 +122,6 @@ public class MemberController implements iController
         }
     }
 
-    public boolean addServiceRecordToMember(int memberId, Service service){
-        Member member = testMembers.get(memberId);
-        if(member == null){
-          return false;
-        }
-        member.addServiceToList(service);
-        return true;
-    }
-
-
-
     private HashMap<Integer, Member> populateMembersList()
     {
         HashMap<Integer,Member> testMembers = new HashMap<Integer,Member>();

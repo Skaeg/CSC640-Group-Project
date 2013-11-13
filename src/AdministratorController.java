@@ -13,10 +13,14 @@ import java.util.HashMap;
  * Time: 5:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AdministratorController implements iController {
+public class AdministratorController implements iController, iLogged
+{
 
     private HashMap<Integer, Administrator> administrators = new HashMap<Integer, Administrator>();
     private File administratorFile = null;
+    private iEmployee loggedIn = null;
+    public final static String VALID = "Valid";
+    public final static String INVALID = "Invalid";
 
     public AdministratorController(String file)
     {
@@ -119,8 +123,6 @@ public class AdministratorController implements iController {
         return saveSuccessful;
     }
 
-
-
     @Override
     public iPerson find(int id)
     {
@@ -151,8 +153,6 @@ public class AdministratorController implements iController {
         return removeSuccessful;
     }
 
-
-
     private HashMap<Integer, Administrator> populateAdministratorsList()
     {
         HashMap<Integer, Administrator> administratorsList = new HashMap<Integer, Administrator>();
@@ -169,7 +169,28 @@ public class AdministratorController implements iController {
         return administratorFile != null ? true : false;
     }
 
+    @Override
+    public String tryLogIn(int id)
+    {
+        String state = INVALID;
+        loggedIn = (Administrator)find(id);
+        if(loggedIn != null)
+        {
+            state = VALID;
+        }
+        return state;
 
+    }
 
+    @Override
+    public iEmployee getLoggedIn()
+    {
+        return loggedIn;
+    }
 
+    @Override
+    public void logout()
+    {
+        loggedIn = null;
+    }
 }

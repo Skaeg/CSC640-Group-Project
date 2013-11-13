@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Steve
@@ -5,7 +8,7 @@
  * Time: 6:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Administrator implements iPerson, iRequestReport
+public class Administrator implements iPerson, iRequestReport, iEmployee
 {
     private String name;          //up to 25 chars
     private String streetAddress; //up to 25 chars
@@ -153,5 +156,18 @@ public class Administrator implements iPerson, iRequestReport
     @Override
     public void requestReport(int reportType) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<String> getMenuItems()
+    {
+        // TODO: this list of menu items must be updated
+        ArrayList<String> menuItems = new ArrayList<String>();
+        menuItems.add("{P}rovide Service");
+        menuItems.add("{A}dd Service To Member Account");
+        menuItems.add("{E}nter Member Number");
+        menuItems.add("{L}ogout Provider");
+        menuItems.add("{Q}uit");
+        return menuItems;
     }
 }

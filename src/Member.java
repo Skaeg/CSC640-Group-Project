@@ -17,7 +17,7 @@ public class Member implements iPerson, Serializable
   private String state;         //2 chars
   private int zipcode;          //5 digits
   private int memberID = -1;    //9 digits
-  private ArrayList<Service> listOfServices;
+  private ArrayList<ServiceRecord> listOfServices;
 
     public Member (){}
 
@@ -29,7 +29,7 @@ public class Member implements iPerson, Serializable
         this.state = state;
         this.zipcode = zipcode;
         this.memberID = id;
-        listOfServices = new ArrayList<Service>();
+        listOfServices = new ArrayList<ServiceRecord>();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Member implements iPerson, Serializable
         this.memberID = id;
     }
 
-    public void addServiceToList(Service service){
+    public void addServiceToList(ServiceRecord service){
         this.listOfServices.add(service);
     }
     public List getListOfServices(){
