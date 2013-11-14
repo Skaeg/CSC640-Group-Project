@@ -152,7 +152,8 @@ public class ServiceDirectory
         services.put(808341, new Service("Phone Counseling", 65.00, 808341));
         services.put(539136, new Service("Cooking Class", 45.00, 539136));
         services.put(773522, new Service("Health Assessment", 65.00, 773522));
-        services.put(6943228, new Service("Aromatherapy", 45.00, 6943228));
+        services.put(694322, new Service("Aromatherapy", 45.00, 694322));
+        services.put(867530, new Service("Jenny", 9.00, 867530));
 
         return services;
     }

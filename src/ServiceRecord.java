@@ -1,4 +1,4 @@
-import java.io.Serializable;
+import java.util.GregorianCalendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,17 +7,20 @@ import java.io.Serializable;
  * Time: 5:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceRecord implements Serializable
+public class ServiceRecord implements java.io.Serializable
 {
     private int providerID;
     private int memberID;
     private int serviceCode;
     private String comments;
-    private SimpleDateTime dateAndTimeServiceEntered;
-    private SimpleDateTime dateOfService;
+    private GregorianCalendar dateAndTimeServiceEntered;
+    private GregorianCalendar dateOfService;
 
+    public ServiceRecord(){
+
+    }
     public ServiceRecord(int _providerID, int _memberID, int _serviceCode, String _comments,
-                         SimpleDateTime _dateAndTimeServiceEntered, SimpleDateTime _dateOfService)
+                         GregorianCalendar _dateAndTimeServiceEntered, GregorianCalendar _dateOfService)
     {
         providerID = _providerID;
         memberID = _memberID;
@@ -26,6 +29,8 @@ public class ServiceRecord implements Serializable
         dateAndTimeServiceEntered = _dateAndTimeServiceEntered;
         dateOfService = _dateOfService;
     }
+
+
     public int getProviderID()
     {
         return providerID;
@@ -46,12 +51,12 @@ public class ServiceRecord implements Serializable
         return comments;
     }
 
-    public SimpleDateTime getDateAndTimeServiceEntered()
+    public GregorianCalendar getDateAndTimeServiceEntered()
     {
         return dateAndTimeServiceEntered;
     }
 
-    public SimpleDateTime getDateOfService()
+    public GregorianCalendar getDateOfService()
     {
         return dateOfService;
     }

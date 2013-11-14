@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class ServiceRecordController {
     // ArrayList<ServiceRecord>
-    private ArrayList<ServiceRecord> servicesList;
+    private ArrayList<ServiceRecord2> servicesList;
     // HashMap<MemberID,Set<indexID>
     private HashMap<Integer, Set<Integer>> memberServicesMap;
     // HashMap<ProviderID,Set<indexID>
@@ -25,12 +25,7 @@ public class ServiceRecordController {
 
     public ServiceRecordController(String file) {
 
-        // Open File and load ArrayList
-        this.memberServicesMap = new HashMap<Integer, Set<Integer>>();
-        this.providerServicesMap = new HashMap<Integer, Set<Integer>>();
-        this.servicesList = new ArrayList<ServiceRecord>();
-        this.fileName = file;
-        open(this.fileName);
+        open(file);
     }
 
     private boolean open(String file) {
@@ -38,19 +33,21 @@ public class ServiceRecordController {
             serviceRecordFile = new File(file);
             // if the provider file does not exist, load our canned one.
             if (!serviceRecordFile.exists()) {
-             saveToFile(file,createMockServiceRecords());
-            }
+                createMockServiceRecords();
+                saveToFile(file,servicesList);
+            } else {
 
                 FileInputStream fis = new FileInputStream(serviceRecordFile);
                 XMLDecoder decoder = new XMLDecoder(fis);
-                ArrayList<ServiceRecord> tempServiceList = (ArrayList<ServiceRecord>) decoder.readObject();
+                ArrayList<ServiceRecord2> tempServiceList = (ArrayList<ServiceRecord2>) decoder.readObject();
 
                 decoder.close();
 
                 // Load records into the array and hashmaps
-                for (ServiceRecord record : tempServiceList) {
+                for (ServiceRecord2 record : tempServiceList) {
                     loadServiceRecordToMemory(record);
                 }
+            }
 
         } catch (Exception e) {
             System.out.println("Exception during deserialization: " + e);
@@ -60,7 +57,33 @@ public class ServiceRecordController {
         return true;
     }
 
-    private boolean saveToFile(String file, ArrayList<ServiceRecord> serviceRecords) {
+
+/*    public Boolean save(String file, ArrayList<ServiceRecord2> serviceRecords ) {
+        if(serviceRecordFile == null){
+            serviceRecordFile = new File(file);
+        }
+        try
+        {
+            if(!serviceRecordFile.exists())
+            {
+                serviceRecordFile.createNewFile();
+            }
+            //String fullPath = file.getAbsolutePath();
+            FileOutputStream os = new FileOutputStream(serviceRecordFile);
+            XMLEncoder encoder = new XMLEncoder(os);
+            encoder.writeObject(servicesList);
+            encoder.close();
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Exception during serialization: " +  ex);
+            // System.exit(0);
+            return false;
+        }
+        return true;
+    }*/
+
+    private boolean saveToFile(String file, ArrayList<ServiceRecord2> serviceRecords) {
         try {
             if (serviceRecordFile == null) {
                 serviceRecordFile = new File(file);
@@ -82,14 +105,14 @@ public class ServiceRecordController {
         return true;
     }
 
-    public boolean saveNewServiceRecord(ServiceRecord serviceRecord) {
+    public boolean saveNewServiceRecord(ServiceRecord2 serviceRecord) {
         if (!loadServiceRecordToMemory(serviceRecord)) {
             return false;
         }
         return saveToFile(this.fileName, this.servicesList);
     }
 
-    private boolean loadServiceRecordToMemory(ServiceRecord serviceRecord) {
+    private boolean loadServiceRecordToMemory(ServiceRecord2 serviceRecord) {
         int newServiceIndex = servicesList.size();
 
         try {
@@ -115,13 +138,13 @@ public class ServiceRecordController {
     }
 
     //Returns a Set of ServiceRecords for a given provider
-    public Set<ServiceRecord> getListOfServiceRecordsByProvider(int providerID) {
+    public Set<ServiceRecord2> getListOfServiceRecordsByProvider(int providerID) {
 
         if (!providerServicesMap.containsKey(providerID) || providerServicesMap.get(providerID).isEmpty()) {
             return null;
         }
 
-        Set<ServiceRecord> tempSet = new HashSet<ServiceRecord>();
+        Set<ServiceRecord2> tempSet = new HashSet<ServiceRecord2>();
 
         for (Integer x : providerServicesMap.get(providerID)) {
             tempSet.add(servicesList.get(x));
@@ -131,12 +154,12 @@ public class ServiceRecordController {
     }
 
     //Returns a Set of ServiceRecords for a given memberID
-    public Set<ServiceRecord> getListOfServiceRecordsByMember(int memberID) {
+    public Set<ServiceRecord2> getListOfServiceRecordsByMember(int memberID) {
         if (!memberServicesMap.containsKey(memberID) || memberServicesMap.get(memberID).isEmpty()) {
             return null;
         }
 
-        Set<ServiceRecord> tempSet = new HashSet<ServiceRecord>();
+        Set<ServiceRecord2> tempSet = new HashSet<ServiceRecord2>();
 
         for (Integer x : memberServicesMap.get(memberID)) {
             tempSet.add(servicesList.get(x));
@@ -145,20 +168,31 @@ public class ServiceRecordController {
         return tempSet;
     }
 
-    private  ArrayList<ServiceRecord> createMockServiceRecords()
+    private  void createMockServiceRecords()
     {
-        ArrayList<ServiceRecord> mockServiceRecords = new  ArrayList<ServiceRecord>();
-     /*   (int _providerID, int _memberID, int _serviceCode, String _comments,
-                Calendar _dateAndTimeServiceEntered, Calendar _dateOfService) */
-        SimpleDateTime cal1 = new SimpleDateTime(2013, 10,30,9,30,0);
-        SimpleDateTime cal2 = new SimpleDateTime(2013,10,25);
+        this.memberServicesMap = new HashMap<Integer, Set<Integer>>();
+        this.providerServicesMap = new HashMap<Integer, Set<Integer>>();
+        this.servicesList = new ArrayList<ServiceRecord2>();
 
-        for(int x = 0; x < 20; x++)
+        // Member ID's
+        int[] memberIDs = new int[]{333222333,333222334,333222335,333222336, 333222337, 333222338,
+                333222339, 333222340, 333222341, 333222342};
+        // Service ID's
+        int[] servcieIDs = new int[]{598385, 598470, 883948, 873546, 582395, 808341 ,539136, 773522,
+                694322, 867530};
+        // Provider ID's
+        int[] providerIDs = new int[]{111222333, 111222444,111222555,111222666,111222666, 111222777,
+            111222888, 111222999, 111333000, 111333111};
+
+        for(int x = 0; x < 10; x++)
         {
-         mockServiceRecords.add(new ServiceRecord(x, x+100, x + 1000, "Comment " + x, cal1, cal2));
+            GregorianCalendar cal1 = new GregorianCalendar(2013, 11, x + 10, 9, x, x+30);
+            GregorianCalendar cal2 = new GregorianCalendar(2013, 11, x + 5);
+
+            loadServiceRecordToMemory(new ServiceRecord2(providerIDs[x], memberIDs[x],servcieIDs[x], "Mock data " + x, cal1, cal2));
         }
 
-        return mockServiceRecords;
+        return;
     }
 
     public boolean serviceRecordFileOpen()
