@@ -163,10 +163,9 @@ public class Administrator implements iPerson, iRequestReport, iEmployee
     {
         // TODO: this list of menu items must be updated
         ArrayList<String> menuItems = new ArrayList<String>();
-        menuItems.add("{P}rovide Service");
-        menuItems.add("{A}dd Service To Member Account");
-        menuItems.add("{E}nter Member Number");
-        menuItems.add("{L}ogout Provider");
+        menuItems.add("{I}nteractive Mode");
+        menuItems.add("{R}eports");
+        menuItems.add("{L}ogout Administrator");
         menuItems.add("{Q}uit");
         return menuItems;
     }

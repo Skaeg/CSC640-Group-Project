@@ -56,6 +56,14 @@ public class DataProcessingController implements iRequestReport
                                 terminal.sendOutput(String.format("%s is an invalid member number.", memberNumber));
                             }
     */                        break;
+                        case 'I': // Interactive Mode for Administrator
+                            //admin interactive mode is where member & provider info can be edited
+                            terminal.sendOutput("Interactive Mode for Administrator will display here");
+                            break;
+                        case 'R': // Reports for Administrator
+                            //admin can run reports
+                            terminal.sendOutput("Report choices for Administrator will display here");
+                            break;
                         case 'L': // logout provider
                             loggedController.logout();
                             loggedIn = null;
