@@ -7,14 +7,23 @@
  */
 public class ReportFactory
 {
-    public static iReport CreateReport(ReportType reportTypeRequested)
+    public static iReport CreateReport(ReportType reportTypeRequested) throws Exception
     {
         iReport reportRequested = null;
         switch (reportTypeRequested)
         {
-
+            case EFTReport:
+            break;
+            case ManagerSummaryReport:
+            break;
+            case MemberReport:
+            break;
+            case ProviderReport:
+                reportRequested = new ProviderReport();
+            break;
             default:
-                break;
+                throw new Exception("Invalid report type.");
+                //break;
         }
         return reportRequested;
     }

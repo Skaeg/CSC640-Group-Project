@@ -1,14 +1,14 @@
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Steve
- * Date: 10/21/13
- * Time: 5:57 PM
+ * User: Mark Noller
+ * Date: 11/14/13
+ * Time: 7:55 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceRecord implements java.io.Serializable
-{
+public class ServiceRecord implements Serializable{
     private int providerID;
     private int memberID;
     private int serviceCode;
@@ -16,48 +16,63 @@ public class ServiceRecord implements java.io.Serializable
     private GregorianCalendar dateAndTimeServiceEntered;
     private GregorianCalendar dateOfService;
 
-    public ServiceRecord(){
+    public ServiceRecord(){}
 
-    }
-    public ServiceRecord(int _providerID, int _memberID, int _serviceCode, String _comments,
-                         GregorianCalendar _dateAndTimeServiceEntered, GregorianCalendar _dateOfService)
-    {
-        providerID = _providerID;
-        memberID = _memberID;
-        serviceCode = _serviceCode;
-        comments = _comments;
-        dateAndTimeServiceEntered = _dateAndTimeServiceEntered;
-        dateOfService = _dateOfService;
+    public ServiceRecord(int providerID, int memberID, int serviceCode, String comments,
+                         GregorianCalendar dateAndTimeServiceEntered, GregorianCalendar dateOfService){
+        this.providerID = providerID;
+        this.memberID = memberID;
+        this.serviceCode = serviceCode;
+        this.comments = comments;
+        this.dateAndTimeServiceEntered = dateAndTimeServiceEntered;
+        this.dateOfService = dateOfService;
     }
 
-
-    public int getProviderID()
-    {
+    public int getProviderID() {
         return providerID;
     }
 
-    public int getMemberID()
-    {
+    public void setProviderID(int providerID) {
+        this.providerID = providerID;
+    }
+
+    public int getMemberID() {
         return memberID;
     }
 
-    public int getServiceCode()
-    {
+    public void setMemberID(int memberID) {
+        this.memberID = memberID;
+    }
+
+    public int getServiceCode() {
         return serviceCode;
     }
 
-    public String getComments()
-    {
+    public void setServiceCode(int serviceCode) {
+        this.serviceCode = serviceCode;
+    }
+
+    public String getComments() {
         return comments;
     }
 
-    public GregorianCalendar getDateAndTimeServiceEntered()
-    {
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public GregorianCalendar getDateAndTimeServiceEntered() {
         return dateAndTimeServiceEntered;
     }
 
-    public GregorianCalendar getDateOfService()
-    {
+    public void setDateAndTimeServiceEntered(GregorianCalendar dateAndTimeServiceEntered) {
+        this.dateAndTimeServiceEntered = dateAndTimeServiceEntered;
+    }
+
+    public GregorianCalendar getDateOfService() {
         return dateOfService;
+    }
+
+    public void setDateOfService(GregorianCalendar dateOfService) {
+        this.dateOfService = dateOfService;
     }
 }

@@ -39,9 +39,9 @@ public class Provider implements iPerson, iEmployee, Serializable
     }
 
     @Override
-    public void setName(String first, String last)
+    public void setName(String name)
     {
-        name = String.format("%s %s", first, last);
+        this.name = name;
     }
 
     @Override
@@ -122,6 +122,6 @@ public class Provider implements iPerson, iEmployee, Serializable
 
     public static Boolean validateIdentifier(int id)
     {
-        return id < 1000000000;
+        return id < 1000000000 && id > 99999999;
     }
 }

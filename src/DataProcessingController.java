@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DataProcessingController implements iRequestReport
 {
@@ -17,11 +16,18 @@ public class DataProcessingController implements iRequestReport
     static ServiceDirectory serviceDirectory;
     static ServiceRecordController serviceRecordController;
 
+    static Calendar lastBillingDate;
+
     public static void mainMenu()
     {
         boolean running = initializeSystem();
         iEmployee loggedIn  = null;
         char menuChoice = ' ';
+
+        // TODO: adjust this to give us the correct billing statements for the test cases
+        lastBillingDate = GregorianCalendar.getInstance();
+        lastBillingDate.set(Calendar.DAY_OF_MONTH, 10);
+        lastBillingDate.set(Calendar.MONTH, 11);
 
         while(running)
         {
@@ -54,6 +60,9 @@ public class DataProcessingController implements iRequestReport
                             loggedController.logout();
                             loggedIn = null;
                             break;
+                        case 'T':
+                            generateWeeklyReports();
+                            break;
                         case 'Q': // Exit the application
                             loggedController.logout();
                             loggedIn = null;
@@ -83,7 +92,15 @@ public class DataProcessingController implements iRequestReport
 
         while(failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
         {
-            Integer providerNumber = Integer.parseInt(terminal.getInput("Enter employee id number:"));
+            Integer providerNumber = 0;
+            try
+            {
+                providerNumber = Integer.parseInt(terminal.getInput("Enter employee id number:"));
+            }
+            catch(Exception ex)
+            {
+                terminal.sendOutput(ex.getMessage());
+            }
             if(providerController.tryLogIn(providerNumber) == ProviderController.VALID)
             {
                 loggedController[0] = providerController;
@@ -167,9 +184,47 @@ public class DataProcessingController implements iRequestReport
         }
     }
 
+    private static void generateWeeklyReports()
+    {
+        try
+        {
+            HashMap<String, iReport> reports = new HashMap<String, iReport>();
+            Calendar today = GregorianCalendar.getInstance();
+            today.set(Calendar.MONTH, 11);
+            for(Integer providerID : providerController.getProviders().keySet())
+            {
+                Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, lastBillingDate, today);
+                Provider provider = providerController.getProvider(providerID);
+
+                if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
+                {
+                    ProviderReport providerReport = new ProviderReport();
+                    providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                    reports.put(provider.getName(), providerReport);
+                }
+            }
+
+            for(Map.Entry<String, iReport> report : reports.entrySet())
+            {
+                report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
+            }
+            // weekly report run, update the last billing date
+            lastBillingDate = GregorianCalendar.getInstance(); // TODO: save to file?
+        }
+        catch (Exception ex)
+        {
+            terminal.sendOutput(ex.getMessage());
+        }
+    }
+
     static void handleExit()
     {
         System.exit(0);
+    }
+
+    private static String getDateFromCalendar(Calendar date)
+    {
+        return String.format("%2d-%2d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DATE), date.get(Calendar.YEAR));
     }
 
     @Override

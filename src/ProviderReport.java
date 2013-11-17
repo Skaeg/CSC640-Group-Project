@@ -1,7 +1,7 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,49 +12,62 @@ import java.util.Map;
  */
 public class ProviderReport implements iReport
 {
-    private HashMap<Integer, Provider> providers;
-    private HashMap<Integer, Member> members;
-    private HashMap<Integer, List<String>> providerReports = new HashMap<Integer, List<String>>();
-    public ProviderReport(HashMap<Integer, Provider> providers, HashMap<Integer, Member> members)
-    {
-        this.providers = providers;
-        this.members = members;
-    }
+    String reportContent;
 
-    @Override
-    public void sendReport()
+    public void sendReport(String destination)
     {
-
-    }
-
-    @Override
-    public void executeReport()
-    {
-        for(Map.Entry<Integer, Provider> provider : providers.entrySet())
+        try
         {
-            int providerID = provider.getValue().getIdentifier();
-            for(Map.Entry<Integer, Member> member : members.entrySet())
-            {
-                // if the member has not had any services, skip to the next member
-                List<ServiceRecord> memberServices = member.getValue().getListOfServices();
-                if(memberServices.size() == 0)
-                {
-                    continue;
-                }
-                for(ServiceRecord memberService : memberServices)
-                {
-                    if(memberService.getProviderID() == providerID)
-                    {
-                        String serviceString = " ";
-                        if(!providerReports.containsKey(providerID))
-                        {
-                            providerReports.put(providerID, new ArrayList<String>());
-                        }
-                        providerReports.get(providerID).add(serviceString);
-
-                    }
-                }
-            }
+            PrintWriter out = new PrintWriter(destination);
+            out.write(reportContent);
+            out.close();
         }
+        catch (Exception ex)
+        {
+            // TODO: log exception
+        }
+    }
+
+    public void executeReport(Provider provider, Set<ServiceRecord> tempSet, MemberController members, ServiceDirectory serviceDirectory)
+    {
+        StringBuilder reportBuilder = new StringBuilder();
+        double feeTotal = 0;
+        int consultations = 0;
+        // Header
+        reportBuilder.append(String.format("Provider: %-20s Provider Number: %09d%n", provider.getName(), provider.getIdentifier()));
+        reportBuilder.append(String.format("Address: %s%n", provider.getStreetAddress()));
+        reportBuilder.append(String.format("         %s, %s %d%n", provider.getCity(), provider.getState(), provider.getZipcode()));
+
+        // Body
+        reportBuilder.append(String.format("Date of Service \t Date of Entry \t Member Member ID Service Code Fee %n"));
+        for(ServiceRecord sr : tempSet)
+        {
+            double fee = serviceDirectory.getService(sr.getServiceCode()).getServiceFee();
+            reportBuilder.append(String.format("%s\t%s\t%-25s\t%09d\t%6d\t$%5.2f%n", getDateFromCalendar(sr.getDateOfService()),
+                    getDateAndTimeFromCalendar(sr.getDateAndTimeServiceEntered()), members.getMember(sr.getMemberID()).getName(),
+                    sr.getMemberID(), sr.getServiceCode(), fee));
+            feeTotal += fee;
+            consultations++;
+        }
+
+        // Summary
+        reportBuilder.append(String.format("%n%nTotal consultations: %d%n", consultations));
+        reportBuilder.append(String.format(Locale.ENGLISH, "Total Weekly Fee: $%5.2f", feeTotal));
+        reportContent = reportBuilder.toString();
+    }
+
+    public String ToString()
+    {
+        return reportContent;
+    }
+
+    private String getDateFromCalendar(Calendar date)
+    {
+        return String.format("%2d-%2d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR));
+    }
+
+    private String getDateAndTimeFromCalendar(Calendar date)
+    {
+        return String.format("%2d-%2d-%4d %2d:%2d:%2d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR), date.get(Calendar.HOUR), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
     }
 }

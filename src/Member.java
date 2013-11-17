@@ -21,9 +21,9 @@ public class Member implements iPerson, Serializable
 
     public Member (){}
 
-    public Member(String fname, String lname, String streetAddress, String city, String state, int zipcode , int id)
+    public Member(String name, String streetAddress, String city, String state, int zipcode , int id)
     {
-        this.name = String.format("%s %s", fname, lname);
+        this.name = name;
         this.streetAddress = streetAddress;
         this.city = city;
         this.state = state;
@@ -39,9 +39,9 @@ public class Member implements iPerson, Serializable
     }
 
     @Override
-    public void setName(String first, String last)
+    public void setName(String name)
     {
-        String.format("%s %s", first, last);
+        this.name = name;
     }
 
     @Override

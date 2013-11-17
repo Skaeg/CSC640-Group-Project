@@ -14,11 +14,11 @@ import java.util.*;
  */
 public class ServiceRecordController {
     // ArrayList<ServiceRecord>
-    private ArrayList<ServiceRecord2> servicesList;
+    private ArrayList<ServiceRecord> servicesList = new ArrayList<ServiceRecord>();
     // HashMap<MemberID,Set<indexID>
-    private HashMap<Integer, Set<Integer>> memberServicesMap;
+    private HashMap<Integer, Set<Integer>> memberServicesMap = new HashMap<Integer, Set<Integer>>();
     // HashMap<ProviderID,Set<indexID>
-    private HashMap<Integer, Set<Integer>> providerServicesMap;
+    private HashMap<Integer, Set<Integer>> providerServicesMap = new HashMap<Integer, Set<Integer>>();
 
     private File serviceRecordFile = null;
     private String fileName;
@@ -28,28 +28,34 @@ public class ServiceRecordController {
         open(file);
     }
 
-    private boolean open(String file) {
-        try {
+    private boolean open(String file)
+    {
+        try
+        {
             serviceRecordFile = new File(file);
             // if the provider file does not exist, load our canned one.
-            if (!serviceRecordFile.exists()) {
+            if (!serviceRecordFile.exists())
+            {
                 createMockServiceRecords();
                 saveToFile(file,servicesList);
-            } else {
-
+            }
+            else
+            {
                 FileInputStream fis = new FileInputStream(serviceRecordFile);
                 XMLDecoder decoder = new XMLDecoder(fis);
-                ArrayList<ServiceRecord2> tempServiceList = (ArrayList<ServiceRecord2>) decoder.readObject();
+                ArrayList<ServiceRecord> tempServiceList = (ArrayList<ServiceRecord>) decoder.readObject();
 
                 decoder.close();
 
                 // Load records into the array and hashmaps
-                for (ServiceRecord2 record : tempServiceList) {
+                for (ServiceRecord record : tempServiceList)
+                {
                     loadServiceRecordToMemory(record);
                 }
             }
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.out.println("Exception during deserialization: " + e);
             //   System.exit(0);
             return false;
@@ -58,7 +64,7 @@ public class ServiceRecordController {
     }
 
 
-/*    public Boolean save(String file, ArrayList<ServiceRecord2> serviceRecords ) {
+/*    public Boolean save(String file, ArrayList<ServiceRecord> serviceRecords ) {
         if(serviceRecordFile == null){
             serviceRecordFile = new File(file);
         }
@@ -83,7 +89,7 @@ public class ServiceRecordController {
         return true;
     }*/
 
-    private boolean saveToFile(String file, ArrayList<ServiceRecord2> serviceRecords) {
+    private boolean saveToFile(String file, ArrayList<ServiceRecord> serviceRecords) {
         try {
             if (serviceRecordFile == null) {
                 serviceRecordFile = new File(file);
@@ -105,74 +111,120 @@ public class ServiceRecordController {
         return true;
     }
 
-    public boolean saveNewServiceRecord(ServiceRecord2 serviceRecord) {
+    public boolean saveNewServiceRecord(ServiceRecord serviceRecord) {
         if (!loadServiceRecordToMemory(serviceRecord)) {
             return false;
         }
         return saveToFile(this.fileName, this.servicesList);
     }
 
-    private boolean loadServiceRecordToMemory(ServiceRecord2 serviceRecord) {
+    private boolean loadServiceRecordToMemory(ServiceRecord serviceRecord)
+    {
         int newServiceIndex = servicesList.size();
 
-        try {
+        try
+        {
             servicesList.add(serviceRecord);
 
             // Add ServiceRecord index to the list of services used by a member
-            if (!memberServicesMap.containsKey(serviceRecord.getMemberID())) {
+            if (!memberServicesMap.containsKey(serviceRecord.getMemberID()))
+            {
                 memberServicesMap.put(serviceRecord.getMemberID(), new HashSet<Integer>());
             }
             memberServicesMap.get(serviceRecord.getMemberID()).add(newServiceIndex);
 
             // Add ServiceRecord index to a list of services provided by a provider
-            if (!providerServicesMap.containsKey(serviceRecord.getProviderID())) {
+            if (!providerServicesMap.containsKey(serviceRecord.getProviderID()))
+            {
                 providerServicesMap.put(serviceRecord.getProviderID(), new HashSet<Integer>());
             }
             providerServicesMap.get(serviceRecord.getProviderID()).add(newServiceIndex);
 
             return true;
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return false;
         }
     }
 
     //Returns a Set of ServiceRecords for a given provider
-    public Set<ServiceRecord2> getListOfServiceRecordsByProvider(int providerID) {
+    public Set<ServiceRecord> getListOfServiceRecordsByProvider(int providerID, Calendar startDate, Calendar endDate)
+    {
 
-        if (!providerServicesMap.containsKey(providerID) || providerServicesMap.get(providerID).isEmpty()) {
+        if (!providerServicesMap.containsKey(providerID) || providerServicesMap.get(providerID).isEmpty())
+        {
             return null;
         }
 
-        Set<ServiceRecord2> tempSet = new HashSet<ServiceRecord2>();
+        Set<ServiceRecord> tempSet = new HashSet<ServiceRecord>();
 
-        for (Integer x : providerServicesMap.get(providerID)) {
-            tempSet.add(servicesList.get(x));
+        for (Integer x : providerServicesMap.get(providerID))
+        {
+            ServiceRecord temp = servicesList.get(x);
+            if(inDateRange(temp.getDateOfService(), startDate, endDate))
+            {
+                tempSet.add(temp);
+            }
         }
 
         return tempSet;
     }
 
     //Returns a Set of ServiceRecords for a given memberID
-    public Set<ServiceRecord2> getListOfServiceRecordsByMember(int memberID) {
-        if (!memberServicesMap.containsKey(memberID) || memberServicesMap.get(memberID).isEmpty()) {
+    public Set<ServiceRecord> getListOfServiceRecordsByMember(int memberID, Calendar startDate, Calendar endDate)
+    {
+        if (!memberServicesMap.containsKey(memberID) || memberServicesMap.get(memberID).isEmpty())
+        {
             return null;
         }
 
-        Set<ServiceRecord2> tempSet = new HashSet<ServiceRecord2>();
+        Set<ServiceRecord> tempSet = new HashSet<ServiceRecord>();
 
-        for (Integer x : memberServicesMap.get(memberID)) {
-            tempSet.add(servicesList.get(x));
+        for (Integer x : memberServicesMap.get(memberID))
+        {
+            ServiceRecord temp = servicesList.get(x);
+            if(temp.getDateOfService().after(startDate) && temp.getDateOfService().before(endDate))
+            {
+                tempSet.add(temp);
+            }
         }
 
         return tempSet;
     }
 
+    private Boolean inDateRange(Calendar check, Calendar start, Calendar end)
+    {
+        Boolean inRange = false;
+        int checkMonth = check.get(Calendar.MONTH);
+        int checkDate = check.get(Calendar.DAY_OF_MONTH);
+        int checkYear = check.get(Calendar.YEAR);
+
+        int startMonth = start.get(Calendar.MONTH);
+        int startDate = start.get(Calendar.DAY_OF_MONTH);
+        int startYear = start.get(Calendar.YEAR);
+
+        int endMonth = end.get(Calendar.MONTH);
+        int endDate = end.get(Calendar.DAY_OF_MONTH);
+        int endYear = end.get(Calendar.YEAR);
+
+        if((checkYear - startYear == 0 && checkYear - endYear == 0) &&
+                (checkMonth - startMonth == 0 && checkMonth - endMonth == 0) &&
+                (checkDate >= startDate && checkDate <= endDate))
+        {
+            return true;
+        }
+
+        return inRange;
+    }
+
+
     private  void createMockServiceRecords()
     {
         this.memberServicesMap = new HashMap<Integer, Set<Integer>>();
         this.providerServicesMap = new HashMap<Integer, Set<Integer>>();
-        this.servicesList = new ArrayList<ServiceRecord2>();
+        this.servicesList = new ArrayList<ServiceRecord>();
 
         // Member ID's
         int[] memberIDs = new int[]{333222333,333222334,333222335,333222336, 333222337, 333222338,
@@ -186,10 +238,10 @@ public class ServiceRecordController {
 
         for(int x = 0; x < 10; x++)
         {
-            GregorianCalendar cal1 = new GregorianCalendar(2013, 11, x + 10, 9, x, x+30);
-            GregorianCalendar cal2 = new GregorianCalendar(2013, 11, x + 5);
+            GregorianCalendar cal1 = new GregorianCalendar(2013, 11, x + 11, 9, x, x+30);
+            GregorianCalendar cal2 = new GregorianCalendar(2013, 11, x + 10);
 
-            loadServiceRecordToMemory(new ServiceRecord2(providerIDs[x], memberIDs[x],servcieIDs[x], "Mock data " + x, cal1, cal2));
+            loadServiceRecordToMemory(new ServiceRecord(providerIDs[x], memberIDs[x],servcieIDs[x], "Mock data " + x, cal1, cal2));
         }
 
         return;

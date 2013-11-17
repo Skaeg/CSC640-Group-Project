@@ -207,4 +207,14 @@ public class ProviderController implements iController, iLogged
     {
         return providerFile != null ? true : false;
     }
+
+    public HashMap<Integer, Provider> getProviders()
+    {
+        return providers;
+    }
+
+    public Provider getProvider(int providerID)
+    {
+        return providers.get(providerID);
+    }
 }

@@ -11,10 +11,10 @@ public class Service implements Serializable
 {
     private int serviceCode;       //6 digits
     private String serviceName;      //6 digits
-    private Double serviceFee;
+    private double serviceFee;
 
     public Service(){}
-    public Service(String serviceName, Double serviceFee, int serviceCode)
+    public Service(String serviceName, double serviceFee, int serviceCode)
     {
         this.serviceName = serviceName;
         this.serviceFee = serviceFee;
@@ -37,11 +37,11 @@ public class Service implements Serializable
         this.serviceName = serviceName;
     }
 
-    public Double getServiceFee(){
+    public double getServiceFee(){
         return this.serviceFee;
     }
 
-    public void setServiceFee(Double serviceFee){
+    public void setServiceFee(double serviceFee){
         this.serviceFee = serviceFee;
     }
 }

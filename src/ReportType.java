@@ -7,5 +7,8 @@
  */
 public enum ReportType
 {
-
+    ManagerSummaryReport,
+    MemberReport,
+    ProviderReport,
+    EFTReport
 }

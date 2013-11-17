@@ -8,7 +8,7 @@
 public interface iPerson
 {
     String getName();
-    void setName(String first, String last);
+    void setName(String name);
     String getStreetAddress();
     void setStreetAddress(String streetAddress);
     String getCity();

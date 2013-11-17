@@ -39,9 +39,9 @@ public class Administrator implements iPerson, iRequestReport, iEmployee
     }
 
     @Override
-    public void setName(String first, String last)
+    public void setName(String name)
     {
-        name = String.format("%s %s", first, last);
+        this.name = name;
     }
 
     @Override

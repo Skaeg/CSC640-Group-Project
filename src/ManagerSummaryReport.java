@@ -8,12 +8,11 @@
 public class ManagerSummaryReport implements iReport
 {
     @Override
-    public void sendReport()
+    public void sendReport(String destination)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public void executeReport()
     {
         //To change body of implemented methods use File | Settings | File Templates.
