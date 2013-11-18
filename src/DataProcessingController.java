@@ -59,6 +59,7 @@ public class DataProcessingController implements iRequestReport
                         case 'I': // Interactive Mode for Administrator
                             //admin interactive mode is where member & provider info can be edited
                             terminal.sendOutput("Interactive Mode for Administrator will display here");
+                            administratorInteractiveMode();
                             break;
                         case 'R': // Reports for Administrator
                             //admin can run reports
@@ -161,12 +162,6 @@ public class DataProcessingController implements iRequestReport
         Boolean administratorsInitialized = false;
         administratorController = new AdministratorController(ADMINISTRATOR_CONTROLLER_FILE);
         return administratorController.administratorFileOpen();
-
-
-
-        //Boolean initializationSuccessful = true;
-
-        //return initializationSuccessful;
     }
 
     private static boolean initializeServiceDirectory()
@@ -240,5 +235,154 @@ public class DataProcessingController implements iRequestReport
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    private static void administratorInteractiveMode(){
+        //this is the administrator's submenu
+        boolean inInteractiveMode = true;
+        char menuChoice = ' ';
+
+        while(inInteractiveMode == true)
+        {
+            try
+            {
+                terminal.sendOutput("Interactive Mode");
+                terminal.sendOutput("1) Add Member");
+                terminal.sendOutput("2) Edit Member");
+                terminal.sendOutput("3) Delete Member");
+                terminal.sendOutput("4) Add Provider");
+                terminal.sendOutput("5) Edit Provider");
+                terminal.sendOutput("6) Delete Provider");
+                terminal.sendOutput("0) Return to Main Menu");
+                menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
+
+                switch (menuChoice)
+                {
+                    case '1': // Add Member
+                        terminal.sendOutput("Add Member for Administrator will display here");
+                        break;
+                    case '2': // Edit Member
+                        terminal.sendOutput("Edit Member for Administrator will display here");
+                        editMember();
+                        break;
+                    case '3': // Delete Member
+                        terminal.sendOutput("Delete Member for Administrator will display here");
+                        break;
+                    case '4': // Add Provider
+                        terminal.sendOutput("Add Provider for Administrator will display here");
+                        break;
+                    case '5': // Edit Provider
+                        terminal.sendOutput("Edit Provider for Administrator will display here");
+                        break;
+                    case '6': // Delete Provider
+                        terminal.sendOutput("Delete Provider for Administrator will display here");
+                        break;
+                    case '0': // exit to previous menu
+                        inInteractiveMode = false;
+                        break;
+                    default:
+                        terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: log exception here and display error message
+                terminal.sendOutput(ex.getMessage());
+            }
+        }
+    }
+
+    private static void editMember(){
+        //NOTE:  THIS ONLY WORKS partly at this point - you can enter a member number, and it will get to the menu that will let you
+        //select which part you want to edit, combined with displaying the member's info.
+
+        //the administrator can edit member info
+        boolean editingMember = true;
+        char menuChoice = ' ';
+        boolean loopThis = true;
+        Integer memberNumber = 0;
+        Member memberToEdit;
+
+        while(loopThis == true)
+        {
+            try
+            {
+                terminal.sendOutput("Edit Member");
+                memberNumber = Integer.parseInt(terminal.getInput("Enter member number, or 0 to return to previous menu:"));
+            }
+            catch(Exception ex)
+            {
+                terminal.sendOutput(ex.getMessage());
+            }
+
+            if (memberController.getMember(memberNumber)!= null) {
+                try
+                {
+                    memberToEdit = memberController.getMember(memberNumber);
+                    terminal.sendOutput("Edit:");
+                    terminal.sendOutput("1) Member Number: " + memberToEdit.getIdentifier());
+                    terminal.sendOutput("2) Name: " + memberToEdit.getName());
+                    terminal.sendOutput("3) Address: " + memberToEdit.getStreetAddress());
+                    terminal.sendOutput("4) City: " + memberToEdit.getCity());
+                    terminal.sendOutput("5) State: " + memberToEdit.getState());
+                    terminal.sendOutput("6) Zip: " + memberToEdit.getZipcode());
+                    terminal.sendOutput("0) Exit to previous menu");
+                    menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
+
+                    String newData = "";
+                    switch (menuChoice)
+                    {
+
+                        //*** NOTE TO GUYS:  IS THIS OK OR DO I NEED TO DO A TRY/CATCH FOR EACH ENTRY?
+                        //***ALSO, is it ok to do here or should i pull it out somewhere else?
+                        case '1': // edit member number
+                            //memberToEdit.setIdentifier(Integer.parseInt(terminal.getInput("Enter new member number:")));
+                            terminal.sendOutput("NOT SURE IF WE SHOULD ALLOW THE MEMBER NUMBER TO CHANGE?  THOUGHTS?");
+                            //also need to change identifier in the hashmap!
+                            break;
+                        case '2': // Edit member name
+                            memberToEdit.setName(terminal.getInput("Enter new name:"));
+                            break;
+                        case '3': // edit member address
+                            memberToEdit.setStreetAddress(terminal.getInput("Enter new street address:"));
+                            break;
+                        case '4': // edit member city
+                            memberToEdit.setCity(terminal.getInput("Enter new city:"));
+                            break;
+                        case '5': // edit member state
+                            memberToEdit.setState(terminal.getInput("Enter new state:"));
+                            break;
+                        case '6': // edit member zip
+                            memberToEdit.setZipcode(Integer.parseInt(terminal.getInput("Enter new zipcode:")));
+                            break;
+                        case '0': // exit to previous menu
+                            loopThis = false;
+                            break;
+                        default:
+                            terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // TODO: log exception here and display error message
+                    terminal.sendOutput(ex.getMessage());
+                }
+
+
+            }
+            else if (memberNumber == 0){
+                loopThis = false;
+            }
+            else{
+                terminal.sendOutput("No member of that number was found");
+            }
+
+
+
+        }
+
+    }
+
 
 }
