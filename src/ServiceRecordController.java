@@ -26,6 +26,15 @@ public class ServiceRecordController {
     public ServiceRecordController(String file) {
 
         open(file);
+
+        // test in range
+        Calendar cal1 = new GregorianCalendar(2013, 11, 3, 9, 11);
+        Calendar cal2 = new GregorianCalendar(2013, 11, 5, 9, 11);
+        Calendar cal3 = new GregorianCalendar(2013, 11, 4, 9, 11);
+        Calendar cal4 = new GregorianCalendar(2013, 11, 6, 9, 11);
+        System.out.println("Data inRange cal3 should be true? " + inDateRange(cal3,cal1,cal2));
+        System.out.println("Data inRange cal4 should be false? " + inDateRange(cal4,cal1,cal2));
+
     }
 
     private boolean open(String file)
@@ -62,32 +71,6 @@ public class ServiceRecordController {
         }
         return true;
     }
-
-
-/*    public Boolean save(String file, ArrayList<ServiceRecord> serviceRecords ) {
-        if(serviceRecordFile == null){
-            serviceRecordFile = new File(file);
-        }
-        try
-        {
-            if(!serviceRecordFile.exists())
-            {
-                serviceRecordFile.createNewFile();
-            }
-            //String fullPath = file.getAbsolutePath();
-            FileOutputStream os = new FileOutputStream(serviceRecordFile);
-            XMLEncoder encoder = new XMLEncoder(os);
-            encoder.writeObject(servicesList);
-            encoder.close();
-        }
-        catch (Exception ex)
-        {
-            System.out.println("Exception during serialization: " +  ex);
-            // System.exit(0);
-            return false;
-        }
-        return true;
-    }*/
 
     private boolean saveToFile(String file, ArrayList<ServiceRecord> serviceRecords) {
         try {
@@ -185,7 +168,7 @@ public class ServiceRecordController {
         for (Integer x : memberServicesMap.get(memberID))
         {
             ServiceRecord temp = servicesList.get(x);
-            if(temp.getDateOfService().after(startDate) && temp.getDateOfService().before(endDate))
+            if(inDateRange(temp.getDateOfService(),startDate,endDate))
             {
                 tempSet.add(temp);
             }
@@ -196,27 +179,11 @@ public class ServiceRecordController {
 
     private Boolean inDateRange(Calendar check, Calendar start, Calendar end)
     {
-        Boolean inRange = false;
-        int checkMonth = check.get(Calendar.MONTH);
-        int checkDate = check.get(Calendar.DAY_OF_MONTH);
-        int checkYear = check.get(Calendar.YEAR);
-
-        int startMonth = start.get(Calendar.MONTH);
-        int startDate = start.get(Calendar.DAY_OF_MONTH);
-        int startYear = start.get(Calendar.YEAR);
-
-        int endMonth = end.get(Calendar.MONTH);
-        int endDate = end.get(Calendar.DAY_OF_MONTH);
-        int endYear = end.get(Calendar.YEAR);
-
-        if((checkYear - startYear == 0 && checkYear - endYear == 0) &&
-                (checkMonth - startMonth == 0 && checkMonth - endMonth == 0) &&
-                (checkDate >= startDate && checkDate <= endDate))
-        {
+        if(check.after(start) && check.before(end)){
             return true;
         }
 
-        return inRange;
+        return false;
     }
 
 
@@ -238,8 +205,8 @@ public class ServiceRecordController {
 
         for(int x = 0; x < 10; x++)
         {
-            GregorianCalendar cal1 = new GregorianCalendar(2013, 11, x + 11, 9, x, x+30);
-            GregorianCalendar cal2 = new GregorianCalendar(2013, 11, x + 10);
+            Calendar cal1 = new GregorianCalendar(2013, 11, x + 11, 9, x, x+30);
+            Calendar cal2 = new GregorianCalendar(2013, 11, x + 10);
 
             loadServiceRecordToMemory(new ServiceRecord(providerIDs[x], memberIDs[x],servcieIDs[x], "Mock data " + x, cal1, cal2));
         }

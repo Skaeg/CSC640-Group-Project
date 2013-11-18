@@ -1,5 +1,6 @@
 import java.io.Serializable;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,13 +14,13 @@ public class ServiceRecord implements Serializable{
     private int memberID;
     private int serviceCode;
     private String comments;
-    private GregorianCalendar dateAndTimeServiceEntered;
-    private GregorianCalendar dateOfService;
+    private Calendar dateAndTimeServiceEntered;
+    private Calendar dateOfService;
 
     public ServiceRecord(){}
 
     public ServiceRecord(int providerID, int memberID, int serviceCode, String comments,
-                         GregorianCalendar dateAndTimeServiceEntered, GregorianCalendar dateOfService){
+                         Calendar dateAndTimeServiceEntered, Calendar dateOfService){
         this.providerID = providerID;
         this.memberID = memberID;
         this.serviceCode = serviceCode;
@@ -60,19 +61,20 @@ public class ServiceRecord implements Serializable{
         this.comments = comments;
     }
 
-    public GregorianCalendar getDateAndTimeServiceEntered() {
+    public Calendar getDateAndTimeServiceEntered() {
         return dateAndTimeServiceEntered;
     }
 
-    public void setDateAndTimeServiceEntered(GregorianCalendar dateAndTimeServiceEntered) {
+    public void setDateAndTimeServiceEntered(Calendar dateAndTimeServiceEntered) {
         this.dateAndTimeServiceEntered = dateAndTimeServiceEntered;
     }
 
-    public GregorianCalendar getDateOfService() {
+    public Calendar getDateOfService() {
+
         return dateOfService;
     }
 
-    public void setDateOfService(GregorianCalendar dateOfService) {
+    public void setDateOfService(Calendar dateOfService) {
         this.dateOfService = dateOfService;
     }
 }
