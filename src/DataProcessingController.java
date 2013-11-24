@@ -117,6 +117,7 @@ public class DataProcessingController implements iRequestReport
             Integer providerNumber = 0;
             try
             {
+                terminal.sendOutput("Test employee Number: 111222333");
                 providerNumber = Integer.parseInt(terminal.getInput("Enter employee id number:"));
             }
             catch(Exception ex)
@@ -208,7 +209,8 @@ public class DataProcessingController implements iRequestReport
             HashMap<String, iReport> reports = new HashMap<String, iReport>();
             Calendar today = GregorianCalendar.getInstance();
             today.set(Calendar.MONTH, 11);
-            for(Integer providerID : providerController.getProviders().keySet())
+
+           for(Integer providerID : providerController.getProviders().keySet())
             {
                 Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, lastBillingDate, today);
                 Provider provider = providerController.getProvider(providerID);
@@ -223,10 +225,27 @@ public class DataProcessingController implements iRequestReport
             }
             eftReport.executeReport();
             reports.put("EFT_Report", eftReport);
+
             /*
             execute other reports here
             then add to reports hashmap
             */
+
+            //Create memberReports for for the given time periord
+            for(Integer memberID : memberController.getAllMembers().keySet())
+            {
+                Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, lastBillingDate, today);
+                Member member = memberController.getMember(memberID);
+
+                if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
+                {
+                    MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords);
+                    reports.put(member.getName(), memberReport);
+                }
+            }
+
+
+
             for(Map.Entry<String, iReport> report : reports.entrySet())
             {
                 report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
@@ -399,12 +418,9 @@ public class DataProcessingController implements iRequestReport
                 terminal.sendOutput("No member of that number was found");
             }
 
-
-
         }
 
     }
-
 
     // based on code from this website: http://programmingexamples.wikidot.com/sheduledexecutorservice
     public void scheduleWeeklyReportGeneration()

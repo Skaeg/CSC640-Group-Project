@@ -27,14 +27,6 @@ public class ServiceRecordController {
 
         open(file);
 
-        // test in range
-        Calendar cal1 = new GregorianCalendar(2013, 11, 3, 9, 11);
-        Calendar cal2 = new GregorianCalendar(2013, 11, 5, 9, 11);
-        Calendar cal3 = new GregorianCalendar(2013, 11, 4, 9, 11);
-        Calendar cal4 = new GregorianCalendar(2013, 11, 6, 9, 11);
-        System.out.println("Data inRange cal3 should be true? " + inDateRange(cal3,cal1,cal2));
-        System.out.println("Data inRange cal4 should be false? " + inDateRange(cal4,cal1,cal2));
-
     }
 
     private boolean open(String file)
@@ -177,6 +169,17 @@ public class ServiceRecordController {
         return tempSet;
     }
 
+   /* //Return all ServiceRecords from a given date range
+    public Set<ServiceRecord> getServiceRecordsforDateRange(Calendar start, Calendar end){
+        HashSet<ServiceRecord> returnSet = new HashSet();
+        for(ServiceRecord record : servicesList){
+         if(inDateRange(record.getDateOfService(),start,end)){
+             returnSet.add(record);
+         }
+        }
+
+        return returnSet;
+    }*/
     private Boolean inDateRange(Calendar check, Calendar start, Calendar end)
     {
         if(check.after(start) && check.before(end)){
@@ -205,8 +208,12 @@ public class ServiceRecordController {
 
         for(int x = 0; x < 10; x++)
         {
-            Calendar cal1 = new GregorianCalendar(2013, 11, x + 11, 9, x, x+30);
-            Calendar cal2 = new GregorianCalendar(2013, 11, x + 10);
+            Calendar cal1 = new GregorianCalendar();
+            cal1.add(Calendar.DAY_OF_MONTH, -x);
+            Calendar cal2 = new GregorianCalendar();
+            cal2.add(Calendar.DAY_OF_MONTH, - (x +2));
+           /* Calendar cal1 = new GregorianCalendar(2013, 11, x + 11, 9, x, x+30);
+            Calendar cal2 = new GregorianCalendar(2013, 11, x + 10);*/
 
             loadServiceRecordToMemory(new ServiceRecord(providerIDs[x], memberIDs[x],servcieIDs[x], "Mock data " + x, cal1, cal2));
         }

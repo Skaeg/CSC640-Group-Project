@@ -87,14 +87,9 @@ public class MemberController implements iController
         return true;
     }
 
-    public Set<iPerson> getAllMembers()
+    public HashMap<Integer, Member> getAllMembers()
     {          Set<iPerson> allMembers = new HashSet<iPerson>();
-
-        for(Integer i : members.keySet()){
-            allMembers.add(members.get(i));
-        }
-
-        return  allMembers;
+        return  members;
     }
 
     @Override
