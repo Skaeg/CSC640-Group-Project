@@ -1,4 +1,8 @@
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class DataProcessingController implements iRequestReport
 {
@@ -16,7 +20,13 @@ public class DataProcessingController implements iRequestReport
     static ServiceDirectory serviceDirectory;
     static ServiceRecordController serviceRecordController;
 
+    static Calendar nextWeeklyReportDate;
     static Calendar lastBillingDate;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    static Timer weeklyReportTimer = new Timer();
+    //expressed in minutes
+    private final static long fONCE_PER_DAY = 60*24;
+    private final static long fONCE_PER_WEEK = fONCE_PER_DAY * 7;
 
     public static void mainMenu()
     {
@@ -28,6 +38,9 @@ public class DataProcessingController implements iRequestReport
         lastBillingDate = GregorianCalendar.getInstance();
         lastBillingDate.set(Calendar.DAY_OF_MONTH, 10);
         lastBillingDate.set(Calendar.MONTH, 11);
+
+        DataProcessingController dataProcessingController = new DataProcessingController();
+        dataProcessingController.scheduleWeeklyReportGeneration();
 
         while(running)
         {
@@ -235,7 +248,7 @@ public class DataProcessingController implements iRequestReport
 
     private static String getDateFromCalendar(Calendar date)
     {
-        return String.format("%2d-%2d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DATE), date.get(Calendar.YEAR));
+        return String.format("%02d-%02d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DATE), date.get(Calendar.YEAR));
     }
 
     @Override
@@ -393,4 +406,38 @@ public class DataProcessingController implements iRequestReport
     }
 
 
+    // based on code from this website: http://programmingexamples.wikidot.com/sheduledexecutorservice
+    public void scheduleWeeklyReportGeneration()
+    {
+        final Runnable weeklyReportGeneration = new Runnable()
+        {
+            public void run()
+            {
+                generateWeeklyReports();
+            }
+        };
+        long initialDelay = 0;
+
+        nextWeeklyReportDate = (Calendar)lastBillingDate.clone();
+        while(nextWeeklyReportDate.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY)
+        {
+            nextWeeklyReportDate.add(Calendar.DAY_OF_MONTH, 1);
+            initialDelay++;
+        }
+        // get number of days expressed in minutes
+        initialDelay *= fONCE_PER_DAY;
+        // find out how many hours till Midnight expressed in minutes, only check to 23 instead of 24, otherwise
+        // the time would go over, for example if it is 1:12 pm, the difference in hours would be 11 hours, but
+        // adding 11 hours to the current time would end up at 12:12 am.
+        initialDelay += (23 - nextWeeklyReportDate.get(Calendar.HOUR_OF_DAY)) * 60;
+        initialDelay += 60 - nextWeeklyReportDate.get(Calendar.MINUTE);
+
+        long period = fONCE_PER_WEEK;
+        TimeUnit units = TimeUnit.MINUTES;
+        final ScheduledFuture<?> beeperHandle = scheduler.scheduleAtFixedRate(weeklyReportGeneration, initialDelay, period, units);
+        // tested with the following code to guarantee that the schedule would work
+        //final ScheduledFuture<?> beeperHandle = scheduler.scheduleAtFixedRate(weeklyReportGeneration, 1, 5, TimeUnit.SECONDS);
+
+        scheduler.schedule(new Runnable() { public void run() { beeperHandle.cancel(true); } }, 60 * 60, TimeUnit.SECONDS);
+    }
 }
