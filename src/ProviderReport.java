@@ -12,7 +12,8 @@ import java.util.Set;
  */
 public class ProviderReport implements iReport
 {
-    String reportContent;
+    private String reportContent;
+    private double feeTotal = 0;
 
     public void sendReport(String destination)
     {
@@ -31,7 +32,6 @@ public class ProviderReport implements iReport
     public void executeReport(Provider provider, Set<ServiceRecord> tempSet, MemberController members, ServiceDirectory serviceDirectory)
     {
         StringBuilder reportBuilder = new StringBuilder();
-        double feeTotal = 0;
         int consultations = 0;
         // Header
         reportBuilder.append(String.format("Provider: %-20s Provider Number: %09d%n", provider.getName(), provider.getIdentifier()));
@@ -39,12 +39,14 @@ public class ProviderReport implements iReport
         reportBuilder.append(String.format("         %s, %s %d%n", provider.getCity(), provider.getState(), provider.getZipcode()));
 
         // Body
-        reportBuilder.append(String.format("Date of Service \t Date of Entry \t Member Member ID Service Code Fee %n"));
+        reportBuilder.append(String.format("%-17s%-21s%-27s%-11s%-14s%-7s%n", "Date of Service", "Date of Entry", "Member", "Member ID", "Service Code", "Fee"));
         for(ServiceRecord sr : tempSet)
         {
             double fee = serviceDirectory.getService(sr.getServiceCode()).getServiceFee();
-            reportBuilder.append(String.format("%s\t%s\t%-25s\t%09d\t%6d\t$%5.2f%n", getDateFromCalendar(sr.getDateOfService()),
-                    getDateAndTimeFromCalendar(sr.getDateAndTimeServiceEntered()), members.getMember(sr.getMemberID()).getName(),
+            String memberName = members.getMember(sr.getMemberID()).getName();
+            reportBuilder.append(String.format("%-17s%-21s%-25s%09d  %6d        $%,5.2f%n", getDateFromCalendar(sr.getDateOfService()),
+                    getDateAndTimeFromCalendar(sr.getDateAndTimeServiceEntered()),
+                    memberName.length() > 25 ? memberName.substring(0,25) : memberName,
                     sr.getMemberID(), sr.getServiceCode(), fee));
             feeTotal += fee;
             consultations++;
@@ -52,8 +54,13 @@ public class ProviderReport implements iReport
 
         // Summary
         reportBuilder.append(String.format("%n%nTotal consultations: %d%n", consultations));
-        reportBuilder.append(String.format(Locale.ENGLISH, "Total Weekly Fee: $%5.2f", feeTotal));
+        reportBuilder.append(String.format(Locale.ENGLISH, "Total Weekly Fee: $%,5.2f%n", feeTotal));
         reportContent = reportBuilder.toString();
+    }
+
+    public double getFeeTotal()
+    {
+        return feeTotal;
     }
 
     public String ToString()
@@ -63,11 +70,11 @@ public class ProviderReport implements iReport
 
     private String getDateFromCalendar(Calendar date)
     {
-        return String.format("%2d-%2d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR));
+        return String.format("%02d-%02d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR));
     }
 
     private String getDateAndTimeFromCalendar(Calendar date)
     {
-        return String.format("%2d-%2d-%4d %2d:%2d:%2d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR), date.get(Calendar.HOUR), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
+        return String.format("%02d-%02d-%4d %02d:%02d:%02d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR), date.get(Calendar.HOUR), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
     }
 }

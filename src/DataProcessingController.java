@@ -191,6 +191,7 @@ public class DataProcessingController implements iRequestReport
     {
         try
         {
+            EFTReport eftReport = new EFTReport();
             HashMap<String, iReport> reports = new HashMap<String, iReport>();
             Calendar today = GregorianCalendar.getInstance();
             today.set(Calendar.MONTH, 11);
@@ -204,13 +205,20 @@ public class DataProcessingController implements iRequestReport
                     ProviderReport providerReport = new ProviderReport();
                     providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
                     reports.put(provider.getName(), providerReport);
+                    eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
                 }
             }
-
+            eftReport.executeReport();
+            reports.put("EFT_Report", eftReport);
+            /*
+            execute other reports here
+            then add to reports hashmap
+            */
             for(Map.Entry<String, iReport> report : reports.entrySet())
             {
                 report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
             }
+
             // weekly report run, update the last billing date
             lastBillingDate = GregorianCalendar.getInstance(); // TODO: save to file?
         }
