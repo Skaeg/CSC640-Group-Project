@@ -35,9 +35,10 @@ public class DataProcessingController implements iRequestReport
         char menuChoice = ' ';
 
         // TODO: adjust this to give us the correct billing statements for the test cases
-        lastBillingDate = GregorianCalendar.getInstance();
-        lastBillingDate.set(Calendar.DAY_OF_MONTH, 10);
-        lastBillingDate.set(Calendar.MONTH, 11);
+        lastBillingDate = new GregorianCalendar();
+        lastBillingDate.add(Calendar.DAY_OF_MONTH, -10);
+      //  lastBillingDate.set(Calendar.DAY_OF_MONTH, 10);
+      //  lastBillingDate.set(Calendar.MONTH, 11);
 
         DataProcessingController dataProcessingController = new DataProcessingController();
         dataProcessingController.scheduleWeeklyReportGeneration();
@@ -267,7 +268,7 @@ public class DataProcessingController implements iRequestReport
 
     private static String getDateFromCalendar(Calendar date)
     {
-        return String.format("%02d-%02d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DATE), date.get(Calendar.YEAR));
+        return String.format("%02d-%02d-%4d", date.get(Calendar.MONTH) + 1, date.get(Calendar.DATE), date.get(Calendar.YEAR));
     }
 
     @Override

@@ -44,7 +44,8 @@ public class ProviderReport implements iReport
         {
             double fee = serviceDirectory.getService(sr.getServiceCode()).getServiceFee();
             String memberName = members.getMember(sr.getMemberID()).getName();
-            reportBuilder.append(String.format("%-17s%-21s%-25s%09d  %6d        $%,5.2f%n", getDateFromCalendar(sr.getDateOfService()),
+            reportBuilder.append(String.format("%-17s%-21s%-25s%09d  %6d        $%,5.2f%n",
+                    getDateFromCalendar(sr.getDateOfService()),
                     getDateAndTimeFromCalendar(sr.getDateAndTimeServiceEntered()),
                     memberName.length() > 25 ? memberName.substring(0,25) : memberName,
                     sr.getMemberID(), sr.getServiceCode(), fee));
