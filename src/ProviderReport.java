@@ -14,6 +14,7 @@ public class ProviderReport implements iReport
 {
     private String reportContent;
     private double feeTotal = 0;
+    private int consultations = 0;
 
     public void sendReport(String destination)
     {
@@ -32,7 +33,7 @@ public class ProviderReport implements iReport
     public void executeReport(Provider provider, Set<ServiceRecord> tempSet, MemberController members, ServiceDirectory serviceDirectory)
     {
         StringBuilder reportBuilder = new StringBuilder();
-        int consultations = 0;
+        //int consultations = 0;        **I moved it up top
         // Header
         reportBuilder.append(String.format("Provider: %-20s Provider Number: %09d%n", provider.getName(), provider.getIdentifier()));
         reportBuilder.append(String.format("Address: %s%n", provider.getStreetAddress()));
@@ -62,6 +63,11 @@ public class ProviderReport implements iReport
     public double getFeeTotal()
     {
         return feeTotal;
+    }
+
+    public int getConsultations()
+    {
+        return consultations;
     }
 
     public String ToString()

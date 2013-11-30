@@ -207,6 +207,7 @@ public class DataProcessingController implements iRequestReport
         try
         {
             EFTReport eftReport = new EFTReport();
+            ManagerSummaryReport summaryReport = new ManagerSummaryReport();
             HashMap<String, iReport> reports = new HashMap<String, iReport>();
             Calendar today = GregorianCalendar.getInstance();
             today.set(Calendar.MONTH, 11);
@@ -222,10 +223,13 @@ public class DataProcessingController implements iRequestReport
                     providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
                     reports.put(provider.getName(), providerReport);
                     eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
+                    summaryReport.addSummaryEntry(provider.getName(), providerReport.getConsultations(), providerReport.getFeeTotal());
                 }
             }
             eftReport.executeReport();
             reports.put("EFT_Report", eftReport);
+            summaryReport.executeReport();
+            reports.put("Summary_Report",summaryReport);
 
             /*
             execute other reports here
@@ -334,6 +338,11 @@ public class DataProcessingController implements iRequestReport
     }
 
     private static void editMember(){
+        //to do: ***********************
+        //change return value to boolean, set it initally to false, then after successful change set to true.
+       //check after every loop iteration if it went ok
+
+
         //NOTE:  THIS ONLY WORKS partly at this point - you can enter a member number, and it will get to the menu that will let you
         //select which part you want to edit, combined with displaying the member's info.
 
