@@ -313,7 +313,7 @@ public class DataProcessingController implements iRequestReport
                         editMember();
                         break;
                     case '3': // Delete Member
-                        terminal.sendOutput("Delete Member for Administrator will display here");
+                        removeMember();
                         break;
                     case '4': // Add Provider
                         addProvider();
@@ -322,7 +322,7 @@ public class DataProcessingController implements iRequestReport
                         editProvider();
                         break;
                     case '6': // Delete Provider
-                        terminal.sendOutput("Delete Provider for Administrator will display here");
+                        removeProvider();
                         break;
                     case '0': // exit to previous menu
                         inInteractiveMode = false;
@@ -614,7 +614,73 @@ public class DataProcessingController implements iRequestReport
         return newData;
     }
 
+    private static boolean removeMember()
+    {
+        terminal.sendOutput("Delete Member");
+        int memberNumber = 0;
+        Member memberToDelete;
+        int confirmDelete = 0;
 
+        //member number
+
+        memberNumber = collectIntInput("Enter 9 digit member number of member to be deleted");
+        //check if it already exists
+        if (memberController.getMember(memberNumber)== null)
+        {
+            terminal.sendOutput("There is no member with that number.");
+        }
+        else
+        {
+            memberToDelete = memberController.getMember(memberNumber);
+            terminal.sendOutput("Confirm deletion of "+ memberToDelete.getName());
+            terminal.sendOutput("1. Confirm");
+            confirmDelete = collectIntInput("2. Cancel");
+        }
+
+        if(confirmDelete == 1)
+        {
+            return memberController.remove(memberNumber);
+        }
+        else
+        {
+            terminal.sendOutput("Member Deletion Cancelled");
+            return false;
+        }
+    }
+
+    private static boolean removeProvider()
+    {
+        terminal.sendOutput("Delete Provider");
+        int providerNumber = 0;
+        Provider providerToDelete;
+        int confirmDelete = 0;
+
+        //member number
+
+        providerNumber = collectIntInput("Enter 9 digit member number of provider to be deleted");
+        //check if it already exists
+        if (providerController.getProvider(providerNumber)== null)
+        {
+            terminal.sendOutput("There is no provider with that number.");
+        }
+        else
+        {
+            providerToDelete = providerController.getProvider(providerNumber);
+            terminal.sendOutput("Confirm deletion of "+ providerToDelete.getName());
+            terminal.sendOutput("1. Confirm");
+            confirmDelete = collectIntInput("2. Cancel");
+        }
+
+        if(confirmDelete == 1)
+        {
+            return providerController.remove(providerNumber);
+        }
+        else
+        {
+            terminal.sendOutput("Provider Deletion Cancelled");
+            return false;
+        }
+    }
 
     private static void editProvider()
     {
