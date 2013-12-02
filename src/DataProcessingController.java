@@ -76,7 +76,8 @@ public class DataProcessingController implements iRequestReport
                             break;
                         case 'R': // Reports for Administrator
                             //admin can run reports
-                            terminal.sendOutput("Report choices for Administrator will display here");
+                            terminal.sendOutput("Report choices for Administrator will display here... for now we just triggered all weekly reports");
+                            generateWeeklyReports();
                             break;
                         case 'L': // logout provider
                             loggedController.logout();
@@ -210,7 +211,8 @@ public class DataProcessingController implements iRequestReport
             ManagerSummaryReport summaryReport = new ManagerSummaryReport();
             HashMap<String, iReport> reports = new HashMap<String, iReport>();
             Calendar today = GregorianCalendar.getInstance();
-            today.set(Calendar.MONTH, 11);
+//  ********* Not needed because all mock data is generated based on the current date. Also months are 0 --> 11
+//            today.set(Calendar.MONTH, 11);
 
            for(Integer providerID : providerController.getProviders().keySet())
             {

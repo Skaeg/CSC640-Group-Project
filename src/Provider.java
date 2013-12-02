@@ -115,7 +115,6 @@ public class Provider implements iPerson, iEmployee, Serializable
         menuItems.add("{P}rovide Service");
         menuItems.add("{A}dd Service To Member Account");
         menuItems.add("{E}nter Member Number");
-        menuItems.add("{T}rigger Weekly Reports ****** Force to run for test only???******");
         menuItems.add("{L}ogout Provider");
         menuItems.add("{Q}uit");
         return menuItems;
