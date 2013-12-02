@@ -305,7 +305,7 @@ public class DataProcessingController implements iRequestReport
                 switch (menuChoice)
                 {
                     case '1': // Add Member
-                        terminal.sendOutput("Add Member for Administrator will display here");
+                        addMember();
                         break;
                     case '2': // Edit Member
                         editMember();
@@ -314,7 +314,7 @@ public class DataProcessingController implements iRequestReport
                         terminal.sendOutput("Delete Member for Administrator will display here");
                         break;
                     case '4': // Add Provider
-                        terminal.sendOutput("Add Provider for Administrator will display here");
+                        addProvider();
                         break;
                     case '5': // Edit Provider
                         editProvider();
@@ -485,6 +485,134 @@ public class DataProcessingController implements iRequestReport
         }
 
     }
+
+    private static boolean addMember()
+    {
+        terminal.sendOutput("Add Member");
+        String memberName = "";
+        String memberAddress = "";
+        String memberCity = "";
+        String memberState = "";
+        int memberZip = 0;
+        int memberNumber = 0;
+
+        //member number
+        boolean loopThis = true;
+        while(loopThis == true)
+        {
+            memberNumber = collectIntInput("Enter new 9 digit member number:");
+            //check if it already exists
+            if (memberController.getMember(memberNumber)!= null)
+            {
+                terminal.sendOutput("That member number is already used. Please enter another");
+                loopThis = true;
+            }
+            else
+            {
+                loopThis = false;
+            }
+        }
+
+        memberName = collectStringInput("Enter member name");
+        memberAddress = collectStringInput("Enter street address");
+        memberCity = collectStringInput("Enter city");
+        memberState = collectStringInput("Enter state");
+        memberZip = collectIntInput("Enter zipcode");
+
+        Member newMember = new Member (memberName, memberAddress, memberCity, memberState, memberZip, memberNumber);   //new Member("Linda Schaefer", "4103 N 62nd St", "Milwaukee", "WI", 53213, 333222333));
+        return memberController.add(newMember);
+    }
+
+    private static boolean addProvider()
+    {
+        terminal.sendOutput("Add Provider");
+        String providerName = "";
+        String providerAddress = "";
+        String providerCity = "";
+        String providerState = "";
+        int providerZip = 0;
+        int providerNumber = 0;
+
+        //member number
+        boolean loopThis = true;
+        while(loopThis == true)
+        {
+            providerNumber = collectIntInput("Enter new 9 digit provider number:");
+            //check if it already exists
+            if (providerController.getProvider(providerNumber)!= null)
+            {
+                terminal.sendOutput("That provider number is already used. Please enter another");
+                loopThis = true;
+            }
+            else
+            {
+                loopThis = false;
+            }
+        }
+
+        providerName = collectStringInput("Enter provider name");
+        providerAddress = collectStringInput("Enter street address");
+        providerCity = collectStringInput("Enter city");
+        providerState = collectStringInput("Enter state");
+        providerZip = collectIntInput("Enter zipcode");
+
+        Provider newProvider = new Provider (providerName, providerAddress, providerCity, providerState, providerZip, providerNumber);
+        return providerController.add(newProvider);
+    }
+
+    private static String collectStringInput(String message)
+    {
+        String newData = "";
+        boolean loopThis = true;
+        while(loopThis)
+        {
+            try
+            {
+                newData = terminal.getInput(message);
+            }
+            catch(Exception ex)
+            {
+                terminal.sendOutput(ex.getMessage());
+            }
+            if (!newData.equals("") && !newData.equals("0"))
+            {
+                loopThis = false;
+            }
+            else
+            {
+                loopThis = true;
+            }
+        }
+        return newData;
+    }
+
+    private static int collectIntInput(String message)
+    {
+        int newData = 0;
+        boolean loopThis = true;
+        while(loopThis)
+        {
+            try
+            {
+                newData = Integer.parseInt(terminal.getInput(message));
+            }
+            catch(Exception ex)
+            {
+                terminal.sendOutput(ex.getMessage());
+            }
+            if (newData != 0)
+            {
+                loopThis = false;
+            }
+            else
+            {
+                loopThis = true;
+            }
+        }
+        return newData;
+    }
+
+
 
     private static void editProvider()
     {
