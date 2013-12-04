@@ -83,7 +83,7 @@ public class DataProcessingController implements iRequestReport
                             loggedIn = null;
                             break;
                         case 'T':
-                            generateWeeklyReports(true, true, true, true);
+                            generateWeeklyReports(-1,true, true, true, true);
                             break;
                         case 'Q': // Exit the application
                             loggedController.logout();
@@ -203,7 +203,7 @@ public class DataProcessingController implements iRequestReport
     }
 
     //the parameters in this one control what reports will run.
-    private static void generateWeeklyReports(boolean runMember, boolean runProvider, boolean runEFT, boolean runSummary)
+    private static void generateWeeklyReports(int pastDays, boolean runMember, boolean runProvider, boolean runEFT, boolean runSummary)
     {
         try
         {
@@ -211,12 +211,19 @@ public class DataProcessingController implements iRequestReport
             ManagerSummaryReport summaryReport = new ManagerSummaryReport();
             HashMap<String, iReport> reports = new HashMap<String, iReport>();
             Calendar today = GregorianCalendar.getInstance();
+            Calendar startOfReportRequest =  (Calendar)today.clone();
 //  ********* Not needed because all mock data is generated based on the current date. Also months are 0 --> 11
 //            today.set(Calendar.MONTH, 11);
 
+            if(pastDays < 0){
+                startOfReportRequest = lastBillingDate;
+            }else {
+                startOfReportRequest.add(Calendar.DAY_OF_MONTH,(pastDays *= -1));
+            }
+
            for(Integer providerID : providerController.getProviders().keySet())
             {
-                Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, lastBillingDate, today);
+                Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, startOfReportRequest, today);
                 Provider provider = providerController.getProvider(providerID);
 
                 if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
@@ -257,12 +264,12 @@ public class DataProcessingController implements iRequestReport
             //Create memberReports for for the given time periord
                 for(Integer memberID : memberController.getAllMembers().keySet())
                 {
-                    Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, lastBillingDate, today);
+                    Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, startOfReportRequest, today);
                     Member member = memberController.getMember(memberID);
 
                     if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
                     {
-                        MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords);
+                        MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords,providerController.getProviders());
                         reports.put(member.getName(), memberReport);
                     }
                 }
@@ -274,8 +281,10 @@ public class DataProcessingController implements iRequestReport
                 report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
             }
 
-            // weekly report run, update the last billing date
+            // if weekly report run, update the last billing date
+            if(pastDays < 0){
             lastBillingDate = GregorianCalendar.getInstance(); // TODO: save to file?
+            }
         }
         catch (Exception ex)
         {
@@ -361,6 +370,7 @@ public class DataProcessingController implements iRequestReport
         //this is the administrator's submenu
         boolean inRunReports = true;
         char menuChoice = ' ';
+        int daysToRun = -1;
 
         while(inRunReports == true)
         {
@@ -374,28 +384,31 @@ public class DataProcessingController implements iRequestReport
                 terminal.sendOutput("5) Summary Report");
                 terminal.sendOutput("0) Return to Main Menu");
                 menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
+               if(menuChoice != '0'){
+                   daysToRun = Integer.valueOf(terminal.getInput("Enter the number of days (proir to today) you would like the reports from"));
+               }
 
                 switch (menuChoice)
                 {
                     case '1': // Run All reports
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(true, true, true, true);
+                        generateWeeklyReports(daysToRun,true, true, true, true);
                         break;
                     case '2': // member reports
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(true, false, false, false);
+                        generateWeeklyReports(daysToRun,true, false, false, false);
                         break;
                     case '3': // provider reports
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(false, true, false, false);
+                        generateWeeklyReports(daysToRun,false, true, false, false);
                         break;
                     case '4': // eft report
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(false, false, true, false);
+                        generateWeeklyReports(daysToRun,false, false, true, false);
                         break;
                     case '5': // summary report
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(false, false, false, true);
+                        generateWeeklyReports(daysToRun,false, false, false, true);
                         break;
                     case '0': // exit to previous menu
                         inRunReports = false;
@@ -910,7 +923,7 @@ public class DataProcessingController implements iRequestReport
         {
             public void run()
             {
-                generateWeeklyReports(true, true, true, true);
+                generateWeeklyReports(-1,true, true, true, true);
             }
         };
         long initialDelay = 0;

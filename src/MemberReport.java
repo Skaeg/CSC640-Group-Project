@@ -15,14 +15,17 @@ public class MemberReport implements iReport
     private Member member;
     private Set<ServiceRecord> serviceRecords;
     private ServiceDirectory serviceDirectory;
+    private HashMap<Integer,Provider> providerMap;
 
     StringBuilder reportContent;
 
-    public MemberReport(ServiceDirectory serviceDirectory, Member member, Set<ServiceRecord> serviceRecords)
+    public MemberReport(ServiceDirectory serviceDirectory, Member member, Set<ServiceRecord> serviceRecords,
+                        HashMap<Integer,Provider> prividerMap)
     {
         this.member =  member;
         this.serviceRecords = serviceRecords;
         this.serviceDirectory = serviceDirectory;
+        this.providerMap = prividerMap;
     }
 
     @Override
@@ -47,8 +50,8 @@ public class MemberReport implements iReport
         for(ServiceRecord s : serviceRecords ){
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
             reportContent.append(String.format("Date of service: %s%n", sdf.format(s.getDateOfService().getTime())));
-            reportContent.append(String.format("Provider Number: %d%n", s.getProviderID()));
-            reportContent.append(String.format("Service provided: %s%n%n" , serviceDirectory.getService(s.getServiceCode())));
+            reportContent.append(String.format("Provider Name: %s%n", providerMap.get(s.getProviderID()).getName()));
+            reportContent.append(String.format("Service provided: %s%n%n" , serviceDirectory.getService(s.getServiceCode()).getServiceName()));
         }
 
         try
