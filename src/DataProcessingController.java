@@ -76,15 +76,14 @@ public class DataProcessingController implements iRequestReport
                             break;
                         case 'R': // Reports for Administrator
                             //admin can run reports
-                            terminal.sendOutput("Report choices for Administrator will display here... for now we just triggered all weekly reports");
-                            generateWeeklyReports();
+                            administratorRunReports();
                             break;
                         case 'L': // logout provider
                             loggedController.logout();
                             loggedIn = null;
                             break;
                         case 'T':
-                            generateWeeklyReports();
+                            generateWeeklyReports(true, true, true, true);
                             break;
                         case 'Q': // Exit the application
                             loggedController.logout();
@@ -203,7 +202,8 @@ public class DataProcessingController implements iRequestReport
         }
     }
 
-    private static void generateWeeklyReports()
+    //the parameters in this one control what reports will run.
+    private static void generateWeeklyReports(boolean runMember, boolean runProvider, boolean runEFT, boolean runSummary)
     {
         try
         {
@@ -223,34 +223,50 @@ public class DataProcessingController implements iRequestReport
                 {
                     ProviderReport providerReport = new ProviderReport();
                     providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
-                    reports.put(provider.getName(), providerReport);
-                    eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
-                    summaryReport.addSummaryEntry(provider.getName(), providerReport.getConsultations(), providerReport.getFeeTotal());
+                    if (runProvider)
+                    {
+                        reports.put(provider.getName(), providerReport);
+                    }
+                    if (runEFT)
+                    {
+                        eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
+                    }
+                    if (runSummary)
+                    {
+                        summaryReport.addSummaryEntry(provider.getName(), providerReport.getConsultations(), providerReport.getFeeTotal());
+                    }
                 }
             }
-            eftReport.executeReport();
-            reports.put("EFT_Report", eftReport);
-            summaryReport.executeReport();
-            reports.put("Summary_Report",summaryReport);
-
+            if (runEFT)
+            {
+                eftReport.executeReport();
+                reports.put("EFT_Report", eftReport);
+            }
+            if (runSummary)
+            {
+                summaryReport.executeReport();
+                reports.put("Summary_Report",summaryReport);
+            }
             /*
             execute other reports here
             then add to reports hashmap
             */
 
-            //Create memberReports for for the given time periord
-            for(Integer memberID : memberController.getAllMembers().keySet())
+            if (runMember)
             {
-                Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, lastBillingDate, today);
-                Member member = memberController.getMember(memberID);
-
-                if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
+            //Create memberReports for for the given time periord
+                for(Integer memberID : memberController.getAllMembers().keySet())
                 {
-                    MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords);
-                    reports.put(member.getName(), memberReport);
+                    Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, lastBillingDate, today);
+                    Member member = memberController.getMember(memberID);
+
+                    if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
+                    {
+                        MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords);
+                        reports.put(member.getName(), memberReport);
+                    }
                 }
             }
-
 
 
             for(Map.Entry<String, iReport> report : reports.entrySet())
@@ -266,6 +282,7 @@ public class DataProcessingController implements iRequestReport
             terminal.sendOutput(ex.getMessage());
         }
     }
+
 
     static void handleExit()
     {
@@ -294,7 +311,6 @@ public class DataProcessingController implements iRequestReport
             try
             {
                 terminal.sendOutput("Interactive Mode");
-                terminal.sendOutput("** IN DEVELOPMENT - curently 2 and 5 work**");
                 terminal.sendOutput("1) Add Member");
                 terminal.sendOutput("2) Edit Member");
                 terminal.sendOutput("3) Delete Member");
@@ -326,6 +342,63 @@ public class DataProcessingController implements iRequestReport
                         break;
                     case '0': // exit to previous menu
                         inInteractiveMode = false;
+                        break;
+                    default:
+                        terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: log exception here and display error message
+                terminal.sendOutput(ex.getMessage());
+            }
+        }
+    }
+
+    private static void administratorRunReports()
+    {
+        //this is the administrator's submenu
+        boolean inRunReports = true;
+        char menuChoice = ' ';
+
+        while(inRunReports == true)
+        {
+            try
+            {
+                terminal.sendOutput("Run Reports");
+                terminal.sendOutput("1) Run all Reports");
+                terminal.sendOutput("2) Member Reports");
+                terminal.sendOutput("3) Provider Reports");
+                terminal.sendOutput("4) EFT Report");
+                terminal.sendOutput("5) Summary Report");
+                terminal.sendOutput("0) Return to Main Menu");
+                menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
+
+                switch (menuChoice)
+                {
+                    case '1': // Run All reports
+                        //runMember, runProvider, runEFT, runSummary
+                        generateWeeklyReports(true, true, true, true);
+                        break;
+                    case '2': // member reports
+                        //runMember, runProvider, runEFT, runSummary
+                        generateWeeklyReports(true, false, false, false);
+                        break;
+                    case '3': // provider reports
+                        //runMember, runProvider, runEFT, runSummary
+                        generateWeeklyReports(false, true, false, false);
+                        break;
+                    case '4': // eft report
+                        //runMember, runProvider, runEFT, runSummary
+                        generateWeeklyReports(false, false, true, false);
+                        break;
+                    case '5': // summary report
+                        //runMember, runProvider, runEFT, runSummary
+                        generateWeeklyReports(false, false, false, true);
+                        break;
+                    case '0': // exit to previous menu
+                        inRunReports = false;
                         break;
                     default:
                         terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
@@ -837,7 +910,7 @@ public class DataProcessingController implements iRequestReport
         {
             public void run()
             {
-                generateWeeklyReports();
+                generateWeeklyReports(true, true, true, true);
             }
         };
         long initialDelay = 0;
