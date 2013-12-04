@@ -37,8 +37,6 @@ public class DataProcessingController implements iRequestReport
         // TODO: adjust this to give us the correct billing statements for the test cases
         lastBillingDate = new GregorianCalendar();
         lastBillingDate.add(Calendar.DAY_OF_MONTH, -10);
-      //  lastBillingDate.set(Calendar.DAY_OF_MONTH, 10);
-      //  lastBillingDate.set(Calendar.MONTH, 11);
 
         DataProcessingController dataProcessingController = new DataProcessingController();
         dataProcessingController.scheduleWeeklyReportGeneration();
@@ -83,7 +81,7 @@ public class DataProcessingController implements iRequestReport
                             loggedIn = null;
                             break;
                         case 'T':
-                            generateWeeklyReports(-1,true, true, true, true);
+                            generateWeeklyReports();
                             break;
                         case 'Q': // Exit the application
                             loggedController.logout();
@@ -203,88 +201,18 @@ public class DataProcessingController implements iRequestReport
     }
 
     //the parameters in this one control what reports will run.
-    private static void generateWeeklyReports(int pastDays, boolean runMember, boolean runProvider, boolean runEFT, boolean runSummary)
+    private static void generateWeeklyReports()
     {
         try
         {
-            EFTReport eftReport = new EFTReport();
-            ManagerSummaryReport summaryReport = new ManagerSummaryReport();
-            HashMap<String, iReport> reports = new HashMap<String, iReport>();
-            Calendar today = GregorianCalendar.getInstance();
-            Calendar startOfReportRequest =  (Calendar)today.clone();
-//  ********* Not needed because all mock data is generated based on the current date. Also months are 0 --> 11
-//            today.set(Calendar.MONTH, 11);
-
-            if(pastDays < 0){
-                startOfReportRequest = lastBillingDate;
-            }else {
-                startOfReportRequest.add(Calendar.DAY_OF_MONTH,(pastDays *= -1));
-            }
-
-           for(Integer providerID : providerController.getProviders().keySet())
-            {
-                Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, startOfReportRequest, today);
-                Provider provider = providerController.getProvider(providerID);
-
-                if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
-                {
-                    ProviderReport providerReport = new ProviderReport();
-                    providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
-                    if (runProvider)
-                    {
-                        reports.put(provider.getName(), providerReport);
-                    }
-                    if (runEFT)
-                    {
-                        eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
-                    }
-                    if (runSummary)
-                    {
-                        summaryReport.addSummaryEntry(provider.getName(), providerReport.getConsultations(), providerReport.getFeeTotal());
-                    }
-                }
-            }
-            if (runEFT)
-            {
-                eftReport.executeReport();
-                reports.put("EFT_Report", eftReport);
-            }
-            if (runSummary)
-            {
-                summaryReport.executeReport();
-                reports.put("Summary_Report",summaryReport);
-            }
-            /*
-            execute other reports here
-            then add to reports hashmap
-            */
-
-            if (runMember)
-            {
-            //Create memberReports for for the given time periord
-                for(Integer memberID : memberController.getAllMembers().keySet())
-                {
-                    Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, startOfReportRequest, today);
-                    Member member = memberController.getMember(memberID);
-
-                    if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
-                    {
-                        MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords,providerController.getProviders());
-                        reports.put(member.getName(), memberReport);
-                    }
-                }
-            }
-
+            Map<String, iReport> reports = generateAllReports(lastBillingDate);
 
             for(Map.Entry<String, iReport> report : reports.entrySet())
             {
                 report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
             }
 
-            // if weekly report run, update the last billing date
-            if(pastDays < 0){
             lastBillingDate = GregorianCalendar.getInstance(); // TODO: save to file?
-            }
         }
         catch (Exception ex)
         {
@@ -292,6 +220,115 @@ public class DataProcessingController implements iRequestReport
         }
     }
 
+    private static Map<String, iReport> generateAllReports(Calendar startOfReportRequest)
+    {
+        Calendar today = GregorianCalendar.getInstance();
+        Map<String, iReport> reports = new HashMap<String, iReport>();
+
+        reports.putAll(generateProviderReport(startOfReportRequest));
+        reports.putAll(generateEFTReport(startOfReportRequest));
+        reports.putAll(generateManagerSummaryReport(startOfReportRequest));
+        reports.putAll(generateMembersReport(startOfReportRequest));
+        return reports;
+    }
+
+    private static Map<String, iReport> generateManagerSummaryReport(Calendar startOfReportRequest)
+    {
+        Calendar today = GregorianCalendar.getInstance();
+        Map<String, iReport> reports = new HashMap<String, iReport>();
+        ManagerSummaryReport summaryReport = new ManagerSummaryReport();
+
+        for(Integer providerID : providerController.getProviders().keySet())
+        {
+            Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, startOfReportRequest, today);
+            Provider provider = providerController.getProvider(providerID);
+
+            if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
+            {
+                ProviderReport providerReport = new ProviderReport();
+                providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                summaryReport.addSummaryEntry(provider.getName(), providerReport.getConsultations(), providerReport.getFeeTotal());
+            }
+        }
+        summaryReport.executeReport();
+        reports.put("Summary_Report",summaryReport);
+        return reports;
+    }
+
+    private static Map<String, iReport> generateEFTReport(Calendar startOfReportRequest)
+    {
+        Calendar today = GregorianCalendar.getInstance();
+        Map<String, iReport> reports = new HashMap<String, iReport>();
+        EFTReport eftReport = new EFTReport();
+
+        for(Integer providerID : providerController.getProviders().keySet())
+        {
+            Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, startOfReportRequest, today);
+            Provider provider = providerController.getProvider(providerID);
+
+            if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
+            {
+                ProviderReport providerReport = new ProviderReport();
+                providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
+            }
+        }
+        eftReport.executeReport();
+        reports.put("EFT_Report", eftReport);
+        return reports;
+    }
+
+    private static Map<String, iReport> generateProviderReport(Calendar startOfReportRequest)
+    {
+        Calendar today = GregorianCalendar.getInstance();
+        Map<String, iReport> reports = new HashMap<String, iReport>();
+
+        for(Integer providerID : providerController.getProviders().keySet())
+        {
+            Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByProvider(providerID, startOfReportRequest, today);
+            Provider provider = providerController.getProvider(providerID);
+
+            if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
+            {
+                ProviderReport providerReport = new ProviderReport();
+                providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                reports.put(provider.getName(), providerReport);
+            }
+        }
+        return reports;
+    }
+
+    private static Map<String, iReport> generateMembersReport(Calendar startOfReportRequest)
+    {
+        Calendar today = GregorianCalendar.getInstance();
+        Map<String, iReport> reports = new HashMap<String, iReport>();
+
+        //Create memberReports for for the given time periord
+        for(Integer memberID : memberController.getAllMembers().keySet())
+        {
+            Set<ServiceRecord> serviceRecords = serviceRecordController.getListOfServiceRecordsByMember(memberID, startOfReportRequest, today);
+            Member member = memberController.getMember(memberID);
+
+            if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
+            {
+                MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords,providerController.getProviders());
+                memberReport.executeReport();
+                reports.put(member.getName(), memberReport);
+            }
+        }
+        if(reports.isEmpty())
+        {
+            terminal.sendOutput("No entries found for that date range.");
+        }
+        else
+        {
+            for(Map.Entry<String, iReport> report : reports.entrySet())
+            {
+                report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
+            }
+        }
+        return reports;
+    }
 
     static void handleExit()
     {
@@ -371,9 +408,11 @@ public class DataProcessingController implements iRequestReport
         boolean inRunReports = true;
         char menuChoice = ' ';
         int daysToRun = -1;
+        Map<String, iReport> reports = null;
 
         while(inRunReports == true)
         {
+            Calendar startOfReportRequest = GregorianCalendar.getInstance();
             try
             {
                 terminal.sendOutput("Run Reports");
@@ -384,31 +423,33 @@ public class DataProcessingController implements iRequestReport
                 terminal.sendOutput("5) Summary Report");
                 terminal.sendOutput("0) Return to Main Menu");
                 menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
-               if(menuChoice != '0'){
+               if(menuChoice != '0')
+               {
                    daysToRun = Integer.valueOf(terminal.getInput("Enter the number of days (proir to today) you would like the reports from"));
+                   startOfReportRequest.add(Calendar.DAY_OF_MONTH,(daysToRun *= -1));
                }
 
                 switch (menuChoice)
                 {
                     case '1': // Run All reports
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(daysToRun,true, true, true, true);
+                        reports = generateAllReports(startOfReportRequest);
                         break;
                     case '2': // member reports
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(daysToRun,true, false, false, false);
+                        reports = generateMembersReport(startOfReportRequest);
                         break;
                     case '3': // provider reports
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(daysToRun,false, true, false, false);
+                        reports = generateProviderReport(startOfReportRequest);
                         break;
                     case '4': // eft report
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(daysToRun,false, false, true, false);
+                        reports = generateEFTReport(startOfReportRequest);
                         break;
                     case '5': // summary report
                         //runMember, runProvider, runEFT, runSummary
-                        generateWeeklyReports(daysToRun,false, false, false, true);
+                        reports = generateManagerSummaryReport(startOfReportRequest);
                         break;
                     case '0': // exit to previous menu
                         inRunReports = false;
@@ -417,6 +458,11 @@ public class DataProcessingController implements iRequestReport
                         terminal.sendOutput(String.format("%c is not a valid menu choice. ", menuChoice));
                         break;
                 }
+                for(Map.Entry<String, iReport> report : reports.entrySet())
+                {
+                    report.getValue().sendReport(String.format("%s_%s.txt", report.getKey(), getDateFromCalendar(GregorianCalendar.getInstance())));
+                }
+
             }
             catch (Exception ex)
             {
@@ -923,7 +969,7 @@ public class DataProcessingController implements iRequestReport
         {
             public void run()
             {
-                generateWeeklyReports(-1,true, true, true, true);
+                generateWeeklyReports();
             }
         };
         long initialDelay = 0;

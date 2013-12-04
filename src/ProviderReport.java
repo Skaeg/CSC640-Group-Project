@@ -33,7 +33,6 @@ public class ProviderReport implements iReport
     public void executeReport(Provider provider, Set<ServiceRecord> tempSet, MemberController members, ServiceDirectory serviceDirectory)
     {
         StringBuilder reportBuilder = new StringBuilder();
-        //int consultations = 0;        **I moved it up top
         // Header
         reportBuilder.append(String.format("Provider: %-20s Provider Number: %09d%n", provider.getName(), provider.getIdentifier()));
         reportBuilder.append(String.format("Address: %s%n", provider.getStreetAddress()));

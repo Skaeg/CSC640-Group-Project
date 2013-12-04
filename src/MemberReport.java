@@ -31,6 +31,21 @@ public class MemberReport implements iReport
     @Override
     public void sendReport(String destination)
     {
+        try
+        {
+            PrintWriter out = new PrintWriter(destination);
+            out.write(reportContent.toString());
+            out.close();
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Something went wrong writing memberReport to file");
+            // TODO: log exception
+        }
+    }
+
+    public void executeReport()
+    {
         if(member == null || serviceRecords == null || serviceDirectory == null){
             System.out.println("Cannot write memberReport to file due to null value");
 
@@ -53,19 +68,5 @@ public class MemberReport implements iReport
             reportContent.append(String.format("Provider Name: %s%n", providerMap.get(s.getProviderID()).getName()));
             reportContent.append(String.format("Service provided: %s%n%n" , serviceDirectory.getService(s.getServiceCode()).getServiceName()));
         }
-
-        try
-        {
-            PrintWriter out = new PrintWriter(destination);
-            out.write(reportContent.toString());
-            out.close();
-        }
-        catch (Exception ex)
-        {
-            System.out.println("Something went wrong writing memberReport to file");
-            // TODO: log exception
-        }
-
     }
-
 }
