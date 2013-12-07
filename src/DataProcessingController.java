@@ -107,15 +107,24 @@ public class DataProcessingController implements iRequestReport
                             break;
                         case 'E' : //Enter Member Number
                             sMemberNumber = terminal.getInput("Enter member Number:");
-                            iMemberNum = Integer.parseInt(sMemberNumber.trim());
+                            iMemberNum = 0;
+                            try
+                            {
+                                iMemberNum = Integer.parseInt(sMemberNumber.trim());
+                            }
+                            catch(Exception ex)
+                            {
+                                terminal.sendOutput("Invalid Number");
+                            }
 
-                            if(memberController.getMember(iMemberNum) == null)
+                            Member tempMember = memberController.getMember(iMemberNum);
+                            if(tempMember == null)
                             {
                                 terminal.sendOutput(String.format("%s is an invalid member number.", sMemberNumber));
                             }
                             else if(!memberController.getMemberStatus(iMemberNum))
                             {
-                                terminal.sendOutput(String.format("%s is a suspended member account.", sMemberNumber));
+                                terminal.sendOutput(String.format("Member %s Suspended - Fees Owed: %d.", tempMember.getIdentifier(), tempMember.getFeesOwed()));
                             }
                             else
                             {
