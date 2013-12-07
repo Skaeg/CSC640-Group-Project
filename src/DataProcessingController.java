@@ -1,4 +1,5 @@
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -64,7 +65,6 @@ public class DataProcessingController implements iRequestReport
                         case 'B':
                             int tries = 0;
                             String correctService;
-                            Service serviceFound;
                             // get member number and validate
                             sMemberNumber = terminal.getInput("Enter member Number: 333222335");
                             iMemberNum = Integer.parseInt(sMemberNumber);
@@ -75,35 +75,41 @@ public class DataProcessingController implements iRequestReport
                             DateFormat df = new SimpleDateFormat("MM-dd-yy");
                             Date dt = df.parse(sDateOfService);
                             Calendar dateOfService = Calendar.getInstance();
+                            Service serviceFound = null;
                             dateOfService.setTime(dt);
-                            do
-                            {
-                                // enter service code and validate
-                                String sServiceCode = terminal.getInput("Enter the service code: 883948");
-                                serviceFound = serviceController.getService(Integer.parseInt(sServiceCode));
-                                while(serviceFound==null && tries++ < 3)
+                            if(Calendar.getInstance().before(dateOfService)){
+                                terminal.sendOutput("Date of service must take place in the past");
+                                break;
+                            }
+                              while(serviceFound==null)
                                 {
-                                    sServiceCode = terminal.getInput("Enter the service code: 883948");
-                                    serviceFound = serviceController.getService(Integer.parseInt(sServiceCode));
+                                    try{
+                                    serviceFound = serviceController.getService(Integer.parseInt(terminal.getInput("Enter the service code: 883948")));
+                                    }catch (NumberFormatException  e){ }
+
+                                    if(serviceFound == null){
+                                        terminal.sendOutput("Invalid Service Code");
+                                        if(++tries >= 3)
+                                        {
+                                            terminal.sendOutput("3 invalid attempts");
+                                            break;
+                                        } }
                                 }
 
-                                if(tries >= 3)
-                                {
-                                    break;
-                                }
                                 // display service name
-                                correctService = terminal.getInput(String.format("Is %s the correct service: $%.2f? Y/N" , serviceFound.getServiceName(), serviceFound.getServiceFee()));
-                                // verify correct y/n
-                            }while(correctService.toUpperCase().compareTo("Y") != 0);
+                                if(serviceFound != null){
+                                    correctService = terminal.getInput(String.format("Is %s the correct service: $%.2f? Y/N" , serviceFound.getServiceName(), serviceFound.getServiceFee()));
+                                    if(correctService.toUpperCase().compareTo("Y") != 1){
+                                        break;
+                                    }
+
 
                             // enter comments
                             String comments = terminal.getInput("Enter any comments for this service here:");
                             // write service record to file
                             //int memberID, int serviceCode, String comments, Calendar dateAndTimeServiceEntered, Calendar dateOfService
                             serviceRecordController.saveNewServiceRecord(new ServiceRecord(((Provider)loggedIn).getIdentifier(), member.getIdentifier(), serviceFound.getServiceCode(), comments, GregorianCalendar.getInstance(), dateOfService));
-
-
-
+                    }
                             break;
                         case 'E' : //Enter Member Number
                             sMemberNumber = terminal.getInput("Enter member Number:");
