@@ -115,6 +115,7 @@ public class Provider implements iPerson, iEmployee, Serializable
         menuItems.add("{P}rovide Service");
         menuItems.add("{B}ill Service to member");
         menuItems.add("{E}nter Member Number");
+        menuItems.add("{D}irectory of Services");
         menuItems.add("{L}ogout Provider");
         menuItems.add("{Q}uit");
         return menuItems;

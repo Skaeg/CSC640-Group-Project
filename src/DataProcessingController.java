@@ -141,6 +141,9 @@ public class DataProcessingController implements iRequestReport
                             //admin interactive mode is where member & provider info can be edited
                             administratorInteractiveMode();
                             break;
+                        case 'D': // create service directory for provider
+                            createServiceDirectory();
+                            break;
                         case 'R': // Reports for Administrator
                             //admin can run reports
                             administratorRunReports();
@@ -414,6 +417,18 @@ public class DataProcessingController implements iRequestReport
     public void requestReport(int reportType)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    private static void createServiceDirectory()
+    {
+        ServiceDirectory serviceDirectory = new ServiceDirectory();
+
+        for (Service service : serviceController.getServicesForDirectory().values())
+        {
+            serviceDirectory.addServiceEntry(service.getServiceName(), service.getServiceCode(), service.getServiceFee());
+        }
+
+        serviceDirectory.executeDirectory();
     }
 
     private static void administratorInteractiveMode()

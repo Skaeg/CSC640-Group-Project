@@ -153,7 +153,7 @@ public class ServiceController
         services.put(539136, new Service("Cooking Class", 45.00, 539136));
         services.put(773522, new Service("Health Assessment", 65.00, 773522));
         services.put(694322, new Service("Aromatherapy", 45.00, 694322));
-        services.put(867530, new Service("Jenny", 9.00, 867530));
+        services.put(867530, new Service("Shock Therapy", 9.00, 867530));
 
         return services;
     }
@@ -182,4 +182,11 @@ public class ServiceController
 
         return  allServices;
     }
+
+    public HashMap<Integer, Service> getServicesForDirectory()
+    {
+        return services;
+    }
+
+
 }
