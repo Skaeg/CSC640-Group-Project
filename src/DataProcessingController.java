@@ -70,7 +70,7 @@ public class DataProcessingController implements iRequestReport
                             iMemberNum = Integer.parseInt(sMemberNumber);
                             Member member = memberController.getMember(iMemberNum);
                             // enter date of service
-                            String sDateOfService = terminal.getInput("Enter the date of the service");
+                            String sDateOfService = terminal.getInput("Enter the date of the service MM-dd-yy");
 
                             DateFormat df = new SimpleDateFormat("MM-dd-yy");
                             Date dt = df.parse(sDateOfService);
@@ -92,7 +92,7 @@ public class DataProcessingController implements iRequestReport
                                     break;
                                 }
                                 // display service name
-                                correctService = terminal.getInput(String.format("Is %s the correct service? Y/N" , serviceFound.getServiceName()));
+                                correctService = terminal.getInput(String.format("Is %s the correct service: $%.2f? Y/N" , serviceFound.getServiceName(), serviceFound.getServiceFee()));
                                 // verify correct y/n
                             }while(correctService.toUpperCase().compareTo("Y") != 0);
 
@@ -101,6 +101,9 @@ public class DataProcessingController implements iRequestReport
                             // write service record to file
                             //int memberID, int serviceCode, String comments, Calendar dateAndTimeServiceEntered, Calendar dateOfService
                             serviceRecordController.saveNewServiceRecord(new ServiceRecord(((Provider)loggedIn).getIdentifier(), member.getIdentifier(), serviceFound.getServiceCode(), comments, GregorianCalendar.getInstance(), dateOfService));
+
+
+
                             break;
                         case 'E' : //Enter Member Number
                             sMemberNumber = terminal.getInput("Enter member Number:");
@@ -116,7 +119,7 @@ public class DataProcessingController implements iRequestReport
                             }
                             else
                             {
-                                terminal.sendOutput(String.format("%s account valid.", sMemberNumber));
+                                terminal.sendOutput(String.format("%s Validated", sMemberNumber));
                             }
                             break;
                         case 'I': // Interactive Mode for Administrator

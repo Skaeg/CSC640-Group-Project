@@ -113,8 +113,7 @@ public class Provider implements iPerson, iEmployee, Serializable
     {
         ArrayList<String> menuItems = new ArrayList<String>();
         menuItems.add("{P}rovide Service");
-        menuItems.add("{B}ill Service");
-        menuItems.add("{A}dd Service To Member Account");
+        menuItems.add("{B}ill Service to member");
         menuItems.add("{E}nter Member Number");
         menuItems.add("{L}ogout Provider");
         menuItems.add("{Q}uit");
