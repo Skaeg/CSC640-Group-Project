@@ -157,7 +157,7 @@ public class DataProcessingController implements iRequestReport
     private static iEmployee loginEmployee(iLogged[] loggedController)
     {
         iEmployee loggedin = null;
-        String message = "";
+        String message = "Invalid Account";
         int failures = 0;
 
         while(failures++ < MAX_NUMBER_OF_LOGIN_ATTEMPTS)
@@ -177,15 +177,16 @@ public class DataProcessingController implements iRequestReport
             {
                 loggedController[0] = providerController;
                 message = "Valid";
+                terminal.sendOutput(message);
                 break;
             }
-            else if(administratorController.tryLogIn(providerNumber) == ProviderController.VALID)
+            else if(administratorController.tryLogIn(providerNumber) == AdministratorController.VALID)
             {
                 loggedController[0] = administratorController;
                 message = "Valid";
+                terminal.sendOutput(message);
                 break;
             }
-
             terminal.sendOutput(message);
         }
 
