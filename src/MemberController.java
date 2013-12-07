@@ -18,7 +18,7 @@ public class MemberController implements iController
 {
     private HashMap<Integer, Member> members;
     public File memberFile;
-
+    public static String SUSPENDED = "Suspended";
 
     public MemberController (String file)
     {

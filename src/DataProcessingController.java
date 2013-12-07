@@ -1,3 +1,5 @@
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,6 +50,8 @@ public class DataProcessingController implements iRequestReport
             loggedIn = loginEmployee(loggedControllerArray);
             iLogged loggedController = loggedControllerArray[0];
             List<String> mainMenuItems = loggedIn.getMenuItems();
+            String sMemberNumber;
+            int iMemberNum;
             while(loggedIn != null)
             {
                 try
@@ -57,17 +61,60 @@ public class DataProcessingController implements iRequestReport
 
                     switch (menuChoice)
                     {
-                        case 'E' : //Enter Member Number
-                            String memberNumber = terminal.getInput("Enter member Number:");
-    /*                        if(mem.containsKey(memberNumber))
-                            {
+                        case 'B':
+                            int tries = 0;
+                            String correctService;
+                            Service serviceFound;
+                            // get member number and validate
+                            sMemberNumber = terminal.getInput("Enter member Number: 333222335");
+                            iMemberNum = Integer.parseInt(sMemberNumber);
+                            Member member = memberController.getMember(iMemberNum);
+                            // enter date of service
+                            String sDateOfService = terminal.getInput("Enter the date of the service");
 
-                            }
-                            else
+                            DateFormat df = new SimpleDateFormat("MM-dd-yy");
+                            Date dt = df.parse(sDateOfService);
+                            Calendar dateOfService = Calendar.getInstance();
+                            dateOfService.setTime(dt);
+                            do
                             {
-                                terminal.sendOutput(String.format("%s is an invalid member number.", memberNumber));
+                                // enter service code and validate
+                                String sServiceCode = terminal.getInput("Enter the service code: 883948");
+                                serviceFound = serviceDirectory.getService(Integer.parseInt(sServiceCode));
+                                while(serviceFound==null && tries++ < 3)
+                                {
+                                    sServiceCode = terminal.getInput("Enter the service code: 883948");
+                                    serviceFound = serviceDirectory.getService(Integer.parseInt(sServiceCode));
+                                }
+
+                                if(tries >= 3)
+                                {
+                                    break;
+                                }
+                                // display service name
+                                correctService = terminal.getInput(String.format("Is %s the correct service? Y/N" , serviceFound.getServiceName()));
+                                // verify correct y/n
+                            }while(correctService.toUpperCase().compareTo("Y") != 0);
+
+                            // enter comments
+                            String comments = terminal.getInput("Enter any comments for this service here:");
+                            // write service record to file
+                            //int memberID, int serviceCode, String comments, Calendar dateAndTimeServiceEntered, Calendar dateOfService
+                            serviceRecordController.saveNewServiceRecord(new ServiceRecord(((Provider)loggedIn).getIdentifier(), member.getIdentifier(), serviceFound.getServiceCode(), comments, GregorianCalendar.getInstance(), dateOfService));
+                            break;
+                        case 'E' : //Enter Member Number
+                            sMemberNumber = terminal.getInput("Enter member Number:");
+                            iMemberNum = Integer.parseInt(sMemberNumber);
+
+                            if(memberController.getMember(iMemberNum) == null)
+                            {
+                                terminal.sendOutput(String.format("%s is an invalid member number.", sMemberNumber));
                             }
-    */                        break;
+                            else if(memberController.getMemberStatus(iMemberNum) == MemberController.SUSPENDED)
+                            {
+                                terminal.sendOutput(String.format("%s is a suspended member account.", sMemberNumber));
+                            }
+                            break;
                         case 'I': // Interactive Mode for Administrator
                             //admin interactive mode is where member & provider info can be edited
                             administratorInteractiveMode();

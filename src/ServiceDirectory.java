@@ -160,7 +160,12 @@ public class ServiceDirectory
 
     Service getService(int serviceCode)
     {
-        return services.get(serviceCode);
+        Service service = null;
+        if(services.containsKey(serviceCode))
+        {
+            service = services.get(serviceCode);
+        }
+        return service;
     }
 
     public boolean serviceDirectoryFileOpen()
