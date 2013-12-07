@@ -25,7 +25,7 @@ public class AdministratorController implements iController, iLogged
     public AdministratorController(String file)
     {
         //this.memberController = memberController;
-        //this.serviceDirectory = serviceDirectory;
+        //this.serviceController = serviceController;
         open(file);
     }
 

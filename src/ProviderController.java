@@ -21,12 +21,12 @@ public class ProviderController implements iController, iLogged
     public final static String VALID = "Valid";
     public final static String INVALID = "Invalid";
     private MemberController memberController;
-    private ServiceDirectory serviceDirectory;
+    private ServiceController serviceController;
 
-    public ProviderController(String file, MemberController memberController, ServiceDirectory serviceDirectory)
+    public ProviderController(String file, MemberController memberController, ServiceController serviceController)
     {
         this.memberController = memberController;
-        this.serviceDirectory = serviceDirectory;
+        this.serviceController = serviceController;
         open(file);
     }
     @Override

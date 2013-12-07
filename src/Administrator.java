@@ -8,7 +8,7 @@ import java.util.List;
  * Time: 6:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Administrator implements iPerson, iRequestReport, iEmployee
+public class Administrator implements iPerson, iEmployee
 {
     private String name;          //up to 25 chars
     private String streetAddress; //up to 25 chars
@@ -111,51 +111,6 @@ public class Administrator implements iPerson, iRequestReport, iEmployee
     public static Boolean validateIdentifier(int id)
     {
         return id < 1000000000;
-    }
-
-
-    //// up to here
-
-
-   public int saveMember(Member m)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return -1;
-    }
-
-    public Member getMember(int id)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return null;
-    }
-
-    public int deleteMember(int id)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return -1;
-    }
-
-    public int saveProvider(Provider p)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return -1;
-    }
-
-    public int deleteProvider(int id)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return -1;
-    }
-
-    public Provider getProvider(int id)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-        return null;
-    }
-
-    @Override
-    public void requestReport(int reportType) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

@@ -14,17 +14,17 @@ public class MemberReport implements iReport
 {
     private Member member;
     private Set<ServiceRecord> serviceRecords;
-    private ServiceDirectory serviceDirectory;
+    private ServiceController serviceController;
     private HashMap<Integer,Provider> providerMap;
 
     StringBuilder reportContent;
 
-    public MemberReport(ServiceDirectory serviceDirectory, Member member, Set<ServiceRecord> serviceRecords,
+    public MemberReport(ServiceController serviceController, Member member, Set<ServiceRecord> serviceRecords,
                         HashMap<Integer,Provider> prividerMap)
     {
         this.member =  member;
         this.serviceRecords = serviceRecords;
-        this.serviceDirectory = serviceDirectory;
+        this.serviceController = serviceController;
         this.providerMap = prividerMap;
     }
 
@@ -46,7 +46,7 @@ public class MemberReport implements iReport
 
     public void executeReport()
     {
-        if(member == null || serviceRecords == null || serviceDirectory == null){
+        if(member == null || serviceRecords == null || serviceController == null){
             System.out.println("Cannot write memberReport to file due to null value");
 
             return;
@@ -66,7 +66,7 @@ public class MemberReport implements iReport
             SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
             reportContent.append(String.format("Date of service: %s%n", sdf.format(s.getDateOfService().getTime())));
             reportContent.append(String.format("Provider Name: %s%n", providerMap.get(s.getProviderID()).getName()));
-            reportContent.append(String.format("Service provided: %s%n%n" , serviceDirectory.getService(s.getServiceCode()).getServiceName()));
+            reportContent.append(String.format("Service provided: %s%n%n" , serviceController.getService(s.getServiceCode()).getServiceName()));
         }
     }
 }

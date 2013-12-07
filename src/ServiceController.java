@@ -15,12 +15,12 @@ import java.util.Set;
  * Time: 5:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ServiceDirectory
+public class ServiceController
 {
     private HashMap<Integer, Service> services = new HashMap<Integer, Service>();
     private File serviceDirectoryFile;
 
-    public ServiceDirectory(String file)
+    public ServiceController(String file)
     {
         open(file);
     }

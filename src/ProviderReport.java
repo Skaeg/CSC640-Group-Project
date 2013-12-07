@@ -30,7 +30,7 @@ public class ProviderReport implements iReport
         }
     }
 
-    public void executeReport(Provider provider, Set<ServiceRecord> tempSet, MemberController members, ServiceDirectory serviceDirectory)
+    public void executeReport(Provider provider, Set<ServiceRecord> tempSet, MemberController members, ServiceController serviceController)
     {
         StringBuilder reportBuilder = new StringBuilder();
         // Header
@@ -42,7 +42,7 @@ public class ProviderReport implements iReport
         reportBuilder.append(String.format("%-17s%-21s%-27s%-11s%-14s%-7s%n", "Date of Service", "Date of Entry", "Member", "Member ID", "Service Code", "Fee"));
         for(ServiceRecord sr : tempSet)
         {
-            double fee = serviceDirectory.getService(sr.getServiceCode()).getServiceFee();
+            double fee = serviceController.getService(sr.getServiceCode()).getServiceFee();
             String memberName = members.getMember(sr.getMemberID()).getName();
             reportBuilder.append(String.format("%-17s%-21s%-25s%09d  %6d        $%,5.2f%n",
                     getDateFromCalendar(sr.getDateOfService()),

@@ -13,13 +13,13 @@ public class DataProcessingController implements iRequestReport
     static final String  PROVIDER_CONTROLLER_FILE = "providers.xml";
     static final String  MEMBER_CONTROLLER_FILE = "members.xml";
     static final String  ADMINISTRATOR_CONTROLLER_FILE = "administrators.xml";
-    static final String  SERVICE_DIRECTORY_FILE = "serviceDirectory.xml";
+    static final String  SERVICE_DIRECTORY_FILE = "serviceController.xml";
     static final String  SERVICE_RECORDS_FILE = "serviceRecords.xml";
 
     static ProviderController providerController;
     static MemberController memberController;
     static AdministratorController administratorController;
-    static ServiceDirectory serviceDirectory;
+    static ServiceController serviceController;
     static ServiceRecordController serviceRecordController;
 
     static Calendar nextWeeklyReportDate;
@@ -80,11 +80,11 @@ public class DataProcessingController implements iRequestReport
                             {
                                 // enter service code and validate
                                 String sServiceCode = terminal.getInput("Enter the service code: 883948");
-                                serviceFound = serviceDirectory.getService(Integer.parseInt(sServiceCode));
+                                serviceFound = serviceController.getService(Integer.parseInt(sServiceCode));
                                 while(serviceFound==null && tries++ < 3)
                                 {
                                     sServiceCode = terminal.getInput("Enter the service code: 883948");
-                                    serviceFound = serviceDirectory.getService(Integer.parseInt(sServiceCode));
+                                    serviceFound = serviceController.getService(Integer.parseInt(sServiceCode));
                                 }
 
                                 if(tries >= 3)
@@ -104,7 +104,7 @@ public class DataProcessingController implements iRequestReport
                             break;
                         case 'E' : //Enter Member Number
                             sMemberNumber = terminal.getInput("Enter member Number:");
-                            iMemberNum = Integer.parseInt(sMemberNumber);
+                            iMemberNum = Integer.parseInt(sMemberNumber.trim());
 
                             if(memberController.getMember(iMemberNum) == null)
                             {
@@ -114,7 +114,8 @@ public class DataProcessingController implements iRequestReport
                             {
                                 terminal.sendOutput(String.format("%s is a suspended member account.", sMemberNumber));
                             }
-                            else {
+                            else
+                            {
                                 terminal.sendOutput(String.format("%s account valid.", sMemberNumber));
                             }
                             break;
@@ -217,7 +218,7 @@ public class DataProcessingController implements iRequestReport
 
     private static boolean initializeProviders()
     {
-        providerController = new ProviderController(PROVIDER_CONTROLLER_FILE, memberController, serviceDirectory);
+        providerController = new ProviderController(PROVIDER_CONTROLLER_FILE, memberController, serviceController);
         return providerController.providerFileOpen();
     }
 
@@ -231,8 +232,8 @@ public class DataProcessingController implements iRequestReport
     private static boolean initializeServiceDirectory()
     {
         Boolean initializationSuccessful = false;
-        serviceDirectory = new ServiceDirectory(SERVICE_DIRECTORY_FILE);
-        return serviceDirectory.serviceDirectoryFileOpen();
+        serviceController = new ServiceController(SERVICE_DIRECTORY_FILE);
+        return serviceController.serviceDirectoryFileOpen();
     }
 
     private static boolean initializeServiceRecords()
@@ -297,7 +298,7 @@ public class DataProcessingController implements iRequestReport
             if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
             {
                 ProviderReport providerReport = new ProviderReport();
-                providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                providerReport.executeReport(provider, serviceRecords, memberController, serviceController);
                 summaryReport.addSummaryEntry(provider.getName(), providerReport.getConsultations(), providerReport.getFeeTotal());
             }
         }
@@ -320,7 +321,7 @@ public class DataProcessingController implements iRequestReport
             if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
             {
                 ProviderReport providerReport = new ProviderReport();
-                providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                providerReport.executeReport(provider, serviceRecords, memberController, serviceController);
                 eftReport.addEFTEntry(provider.getName(), provider.getIdentifier(), providerReport.getFeeTotal());
             }
         }
@@ -342,7 +343,7 @@ public class DataProcessingController implements iRequestReport
             if(serviceRecords != null && !serviceRecords.isEmpty() && provider != null)
             {
                 ProviderReport providerReport = new ProviderReport();
-                providerReport.executeReport(provider, serviceRecords, memberController, serviceDirectory);
+                providerReport.executeReport(provider, serviceRecords, memberController, serviceController);
                 reports.put(provider.getName(), providerReport);
             }
         }
@@ -362,7 +363,7 @@ public class DataProcessingController implements iRequestReport
 
             if(serviceRecords != null && !serviceRecords.isEmpty() && member != null)
             {
-                MemberReport memberReport = new MemberReport(serviceDirectory,member,serviceRecords,providerController.getProviders());
+                MemberReport memberReport = new MemberReport(serviceController,member,serviceRecords,providerController.getProviders());
                 memberReport.executeReport();
                 reports.put(member.getName(), memberReport);
             }
