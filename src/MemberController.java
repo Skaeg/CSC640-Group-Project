@@ -25,9 +25,9 @@ public class MemberController implements iController
             open(file);
     }
 
-    public String getMemberStatus(int id)
+    public boolean getMemberStatus(int id)
     {
-        return "Not yet implemented.";
+      return members.get(id) != null? members.get(id).isStatusValid():false;
     }
 
     public boolean memberFileOpen(){

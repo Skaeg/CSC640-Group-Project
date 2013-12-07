@@ -180,7 +180,7 @@ public class ProviderController implements iController, iLogged
         loggedInProvider = null;
     }
 
-    public String checkMemberStatus(int memberID)
+    public boolean checkMemberStatus(int memberID)
     {
         return memberController.getMemberStatus(memberID);
     }

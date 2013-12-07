@@ -110,9 +110,12 @@ public class DataProcessingController implements iRequestReport
                             {
                                 terminal.sendOutput(String.format("%s is an invalid member number.", sMemberNumber));
                             }
-                            else if(memberController.getMemberStatus(iMemberNum) == MemberController.SUSPENDED)
+                            else if(!memberController.getMemberStatus(iMemberNum))
                             {
                                 terminal.sendOutput(String.format("%s is a suspended member account.", sMemberNumber));
+                            }
+                            else {
+                                terminal.sendOutput(String.format("%s account valid.", sMemberNumber));
                             }
                             break;
                         case 'I': // Interactive Mode for Administrator
@@ -700,7 +703,7 @@ public class DataProcessingController implements iRequestReport
         memberState = collectStringInput("Enter state");
         memberZip = collectIntInput("Enter zipcode");
 
-        Member newMember = new Member (memberName, memberAddress, memberCity, memberState, memberZip, memberNumber);   //new Member("Linda Schaefer", "4103 N 62nd St", "Milwaukee", "WI", 53213, 333222333));
+        Member newMember = new Member (memberName, memberAddress, memberCity, memberState, memberZip, memberNumber, 0,true);   //new Member("Linda Schaefer", "4103 N 62nd St", "Milwaukee", "WI", 53213, 333222333));
         return memberController.add(newMember);
     }
 
