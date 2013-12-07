@@ -17,11 +17,12 @@ public class Member implements iPerson, Serializable
   private String state;         //2 chars
   private int zipcode;          //5 digits
   private int memberID = -1;    //9 digits
-  private ArrayList<ServiceRecord> listOfServices;
+  private boolean statusValid = false;
+  private double feesOwed;
 
     public Member (){}
 
-    public Member(String name, String streetAddress, String city, String state, int zipcode , int id)
+    public Member(String name, String streetAddress, String city, String state, int zipcode , int id, double feesOwed, boolean statusValid)
     {
         this.name = name;
         this.streetAddress = streetAddress;
@@ -29,7 +30,8 @@ public class Member implements iPerson, Serializable
         this.state = state;
         this.zipcode = zipcode;
         this.memberID = id;
-        listOfServices = new ArrayList<ServiceRecord>();
+        this.statusValid = statusValid;
+        this.feesOwed = feesOwed;
     }
 
     @Override
@@ -103,11 +105,28 @@ public class Member implements iPerson, Serializable
         this.memberID = id;
     }
 
-    public void addServiceToList(ServiceRecord service){
-        this.listOfServices.add(service);
+    public boolean isStatusValid() {
+        return statusValid;
     }
-    public List getListOfServices(){
-        return this.listOfServices;
+
+    public void setStatusValid(boolean statusValid) {
+        this.statusValid = statusValid;
+    }
+
+    public void debitAccount(double debit){
+        this.feesOwed -= debit;
+    }
+
+    public void creditAccount(double credit){
+        this.feesOwed += credit;
+    }
+
+    public double getFeesOwed() {
+        return feesOwed;
+    }
+
+    public void setFeesOwed(double feesOwed) {
+        this.feesOwed = feesOwed;
     }
 }
 
