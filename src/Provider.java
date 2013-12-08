@@ -15,6 +15,7 @@ public class Provider implements iPerson, iEmployee, Serializable
     private String streetAddress; //up to 25 chars
     private String city;          //up to 14 chars
     private String state;         //2 chars
+    private String email;
     private int zipcode;          //5 digits
     private int identifier;       //9 digits
 
@@ -22,7 +23,7 @@ public class Provider implements iPerson, iEmployee, Serializable
     {
     }
 
-    public Provider(String name, String streetAddress, String city, String state, int zipcode , int id)
+    public Provider(String name, String streetAddress, String city, String state, int zipcode, String email, int id)
     {
         this.name = name;
         this.streetAddress = streetAddress;
@@ -30,6 +31,7 @@ public class Provider implements iPerson, iEmployee, Serializable
         this.state = state;
         this.zipcode = zipcode;
         this.identifier = id;
+        this.email = email;
     }
 
     @Override
@@ -90,6 +92,16 @@ public class Provider implements iPerson, iEmployee, Serializable
     public int getZipcode()
     {
         return zipcode;
+    }
+
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
     }
 
 

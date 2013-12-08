@@ -189,16 +189,16 @@ public class ProviderController implements iController, iLogged
     {
         HashMap<Integer, Provider> providersList = new HashMap<Integer, Provider>();
 
-        providersList.put(111222333, new Provider("Group Therapeutics, Inc", "2104 W Wells St", "Milwaukee", "WI", 53233, 111222333));
-        providersList.put(111222444, new Provider("West Allis Counseling Center", "5935 W Beloit Rd", "West Allis", "WI", 53219, 111222444));
-        providersList.put(111222555, new Provider("Addiction Treatment Center", "725 N. Mayfair Rd", "Wauwatosa", "WI", 53226, 111222555));
-        providersList.put(111222666, new Provider("Massage Works", "8436 W Lisbon Ave", "Milwaukee", "WI", 53222, 111222666));
-        providersList.put(111222777, new Provider("Natural Supplement Center", "11225 W Bluemound Rd", "Wauwatosa", "WI", 53226, 111222777));
-        providersList.put(111222888, new Provider("Health Energy Spot", "16735 W Greenfield Ave", "New Berlin", "WI", 53151, 111222888));
-        providersList.put(111222999, new Provider("Nutrition Counseling, SC", "14530 W Capitol Dr", "Brookfield", "WI", 53005, 111222999));
-        providersList.put(111333000, new Provider("Vitamin Hut", "2175 S. 60th St", "West Allis", "WI", 53219, 111333000));
-        providersList.put(111333111, new Provider("YMCA of New Berlin", "19555 W Lincoln Ave", "New Berlin", "WI", 53146, 111333111));
-        providersList.put(111333222, new Provider("Neighborhood Counseling Center", "6267 N 76th St", "Milwaukee", "WI", 53218, 111333222));
+        providersList.put(111222333, new Provider("Group Therapeutics, Inc", "2104 W Wells St", "Milwaukee", "WI", 53233, "info@GroupThera.com", 111222333));
+        providersList.put(111222444, new Provider("West Allis Counseling Center", "5935 W Beloit Rd", "West Allis", "WI", 53219, "provider@WACouselingCtr.net", 111222444));
+        providersList.put(111222555, new Provider("Addiction Treatment Center", "725 N. Mayfair Rd", "Wauwatosa", "WI", 53226, "help@Addiction.com", 111222555));
+        providersList.put(111222666, new Provider("Massage Works", "8436 W Lisbon Ave", "Milwaukee", "WI", 53222, "provider@MassageWorks.com", 111222666));
+        providersList.put(111222777, new Provider("Natural Supplement Center", "11225 W Bluemound Rd", "Wauwatosa", "WI", 53226, "main@nsc.com", 111222777));
+        providersList.put(111222888, new Provider("Health Energy Spot", "16735 W Greenfield Ave", "New Berlin", "WI", 53151, "health@HealthEnergy.net", 111222888));
+        providersList.put(111222999, new Provider("Nutrition Counseling, SC", "14530 W Capitol Dr", "Brookfield", "WI", 53005, "help@NutritionCounseling.com", 111222999));
+        providersList.put(111333000, new Provider("Vitamin Hut", "2175 S. 60th St", "West Allis", "WI", 53219, "pills@vitaminhut.net", 111333000));
+        providersList.put(111333111, new Provider("YMCA of New Berlin", "19555 W Lincoln Ave", "New Berlin", "WI", 53146, "linda@YMCANB.org", 111333111));
+        providersList.put(111333222, new Provider("Neighborhood Counseling Center", "6267 N 76th St", "Milwaukee", "WI", 53218, "talk@NCC.com", 111333222));
 
         return providersList;
     }

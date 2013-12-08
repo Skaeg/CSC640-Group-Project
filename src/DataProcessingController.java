@@ -749,6 +749,7 @@ public class DataProcessingController implements iRequestReport
         String providerAddress = "";
         String providerCity = "";
         String providerState = "";
+        String providerEmail = "";
         int providerZip = 0;
         int providerNumber = 0;
 
@@ -774,8 +775,9 @@ public class DataProcessingController implements iRequestReport
         providerCity = collectStringInput("Enter city");
         providerState = collectStringInput("Enter state");
         providerZip = collectIntInput("Enter zipcode");
+        providerEmail = collectStringInput("Enter state");
 
-        Provider newProvider = new Provider (providerName, providerAddress, providerCity, providerState, providerZip, providerNumber);
+        Provider newProvider = new Provider (providerName, providerAddress, providerCity, providerState, providerZip, providerEmail, providerNumber);
         return providerController.add(newProvider);
     }
 
@@ -793,13 +795,13 @@ public class DataProcessingController implements iRequestReport
             {
                 terminal.sendOutput(ex.getMessage());
             }
-            if (!newData.equals("") && !newData.equals("0"))
+            if (newData.equals(""))
             {
-                loopThis = false;
+                loopThis = true;
             }
             else
             {
-                loopThis = true;
+                loopThis = false;
             }
         }
         return newData;
@@ -932,6 +934,7 @@ public class DataProcessingController implements iRequestReport
                     terminal.sendOutput("3) City: " + providerToEdit.getCity());
                     terminal.sendOutput("4) State: " + providerToEdit.getState());
                     terminal.sendOutput("5) Zip: " + providerToEdit.getZipcode());
+                    terminal.sendOutput("6) Email: " + providerToEdit.getEmail());
                     terminal.sendOutput("0) Exit to previous menu");
                     menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
 
@@ -1015,6 +1018,22 @@ public class DataProcessingController implements iRequestReport
                             if (!newData.equals("") && !newData.equals("0"))
                             {
                                 providerToEdit.setZipcode(Integer.parseInt(newData));
+                                providerController.save(PROVIDER_CONTROLLER_FILE);
+                            }
+                            break;
+                        case '6': // edit member state
+                            try
+                            {
+                                newData = terminal.getInput("Enter new email or 0 to exit:");
+                            }
+                            catch(Exception ex)
+                            {
+                                terminal.sendOutput(ex.getMessage());
+                                break;
+                            }
+                            if (!newData.equals("") && !newData.equals("0"))
+                            {
+                                providerToEdit.setEmail(newData);
                                 providerController.save(PROVIDER_CONTROLLER_FILE);
                             }
                             break;
