@@ -510,7 +510,7 @@ public class DataProcessingController implements iRequestReport
                 menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
                if(menuChoice != '0')
                {
-                   daysToRun = Integer.valueOf(terminal.getInput("Enter the number of days (proir to today) you would like the reports from"));
+                   daysToRun = Integer.valueOf(terminal.getInput("Enter the number of days (prior to today) you would like the reports from"));
                    startOfReportRequest.add(Calendar.DAY_OF_MONTH,(daysToRun *= -1));
                }
 
@@ -594,6 +594,7 @@ public class DataProcessingController implements iRequestReport
                     menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
 
                     String newData = "";
+                    int newZip = 0;
                     switch (menuChoice)
                     {
                         case '1': // Edit member name
@@ -654,25 +655,35 @@ public class DataProcessingController implements iRequestReport
                                 terminal.sendOutput(ex.getMessage());
                                 break;
                             }
-                            if (!newData.equals("") && !newData.equals("0"))
+                            if (newData.length() == 2 && newData.matches("^[a-zA-Z]+$"))
                             {
                                 memberToEdit.setState(newData);
                                 memberController.save(MEMBER_CONTROLLER_FILE);
                             }
+                            else
+                            {
+                                terminal.sendOutput("Incorrect entry - state not changed");
+                            }
                             break;
                         case '5': // edit member zip
-                            try
+                            newZip = 0;
+                            loopThis = true;
+                            while(loopThis == true)
                             {
-                                newData = terminal.getInput("Enter new zipcode or 0 to exit:");
+                                newZip = collectIntInput("Enter 5 digit zipcode:");
+                                if (newZip < 100000 && newZip > 9999)
+                                {
+                                    loopThis = false;
+                                }
+                                else
+                                {
+                                    terminal.sendOutput("Number must be 5 digits");
+                                    loopThis = true;
+                                }
                             }
-                            catch(Exception ex)
+                            if (newZip != 0)
                             {
-                                terminal.sendOutput(ex.getMessage());
-                                break;
-                            }
-                            if (!newData.equals("") && !newData.equals("0"))
-                            {
-                                memberToEdit.setZipcode(Integer.parseInt(newData));
+                                memberToEdit.setZipcode(newZip);
                                 memberController.save(MEMBER_CONTROLLER_FILE);
                             }
                             break;
@@ -726,17 +737,50 @@ public class DataProcessingController implements iRequestReport
                 terminal.sendOutput("That member number is already used. Please enter another");
                 loopThis = true;
             }
-            else
+            else if (memberNumber < 1000000000 && memberNumber > 99999999)
             {
                 loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Number must be 9 digits");
+                loopThis = true;
             }
         }
 
         memberName = collectStringInput("Enter member name");
         memberAddress = collectStringInput("Enter street address");
         memberCity = collectStringInput("Enter city");
-        memberState = collectStringInput("Enter state");
-        memberZip = collectIntInput("Enter zipcode");
+        loopThis = true;
+        while(loopThis == true)
+        {
+            memberState = collectStringInput("Enter state");
+            if (memberState.length() == 2 && memberState.matches("^[a-zA-Z]+$"))
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("State must be 2 letter characters");
+                loopThis = true;
+            }
+        }
+
+
+        loopThis = true;
+        while(loopThis == true)
+        {
+            memberZip = collectIntInput("Enter 5 digit zipcode:");
+            if (memberZip < 100000 && memberZip > 9999)
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Number must be 5 digits");
+                loopThis = true;
+            }
+        }
 
         Member newMember = new Member (memberName, memberAddress, memberCity, memberState, memberZip, memberNumber, 0,true);   //new Member("Linda Schaefer", "4103 N 62nd St", "Milwaukee", "WI", 53213, 333222333));
         return memberController.add(newMember);
@@ -764,18 +808,53 @@ public class DataProcessingController implements iRequestReport
                 terminal.sendOutput("That provider number is already used. Please enter another");
                 loopThis = true;
             }
-            else
+            else if (providerNumber < 1000000000 && providerNumber > 99999999)
             {
                 loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Number must be 9 digits");
+                loopThis = true;
             }
         }
 
         providerName = collectStringInput("Enter provider name");
         providerAddress = collectStringInput("Enter street address");
         providerCity = collectStringInput("Enter city");
-        providerState = collectStringInput("Enter state");
-        providerZip = collectIntInput("Enter zipcode");
-        providerEmail = collectStringInput("Enter state");
+
+        loopThis = true;
+        while(loopThis == true)
+        {
+            providerState = collectStringInput("Enter state");
+            if (providerState.length() == 2 && providerState.matches("^[a-zA-Z]+$"))
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("State must be 2 letter characters");
+                loopThis = true;
+            }
+        }
+
+        //member zip
+        loopThis = true;
+        while(loopThis == true)
+        {
+            providerZip = collectIntInput("Enter 5 digit zipcode:");
+            if (providerZip < 100000 && providerZip > 9999)
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Number must be 5 digits");
+                loopThis = true;
+            }
+        }
+
+        providerEmail = collectStringInput("Enter email");
 
         Provider newProvider = new Provider (providerName, providerAddress, providerCity, providerState, providerZip, providerEmail, providerNumber);
         return providerController.add(newProvider);
@@ -938,6 +1017,7 @@ public class DataProcessingController implements iRequestReport
                     terminal.sendOutput("0) Exit to previous menu");
                     menuChoice = terminal.getInput("Enter Menu Option").toUpperCase().charAt(0);
 
+                    int newZip = 0;
                     String newData = "";
                     switch (menuChoice)
                     {
@@ -957,7 +1037,7 @@ public class DataProcessingController implements iRequestReport
                                 providerController.save(PROVIDER_CONTROLLER_FILE);
                             }
                             break;
-                        case '2': // edit member address
+                        case '2': // edit address
                             try
                             {
                                 newData = terminal.getInput("Enter new street address or 0 to exit:");
@@ -973,7 +1053,7 @@ public class DataProcessingController implements iRequestReport
                                 providerController.save(PROVIDER_CONTROLLER_FILE);
                             }
                             break;
-                        case '3': // edit member city
+                        case '3': // edit  city
                             try
                             {
                                 newData = terminal.getInput("Enter new city or 0 to exit:");
@@ -989,39 +1069,50 @@ public class DataProcessingController implements iRequestReport
                                 providerController.save(PROVIDER_CONTROLLER_FILE);
                             }
                             break;
-                        case '4': // edit member state
+                        case '4': // edit  state
                             try
                             {
-                                newData = terminal.getInput("Enter new state or 0 to exit:");
+                                newData = terminal.getInput("Enter new state (2 characters) or 0 to exit:");
                             }
                             catch(Exception ex)
                             {
                                 terminal.sendOutput(ex.getMessage());
                                 break;
                             }
-                            if (!newData.equals("") && !newData.equals("0"))
+                            if (newData.length() == 2 && newData.matches("^[a-zA-Z]+$"))
                             {
                                 providerToEdit.setState(newData);
                                 providerController.save(PROVIDER_CONTROLLER_FILE);
                             }
+                            else
+                            {
+                                terminal.sendOutput("Incorrect entry - state not changed");
+                            }
                             break;
-                        case '5': // edit member zip
-                            try
+                        case '5': // edit  zip
+                            newZip = 0;
+                            loopThis = true;
+                            while(loopThis == true)
                             {
-                                newData = terminal.getInput("Enter new zipcode or 0 to exit:");
+                                newZip = collectIntInput("Enter 5 digit zipcode:");
+                                if (newZip < 100000 && newZip > 9999)
+                                {
+                                    loopThis = false;
+                                }
+                                else
+                                {
+                                    terminal.sendOutput("Number must be 5 digits");
+                                    loopThis = true;
+                                }
                             }
-                            catch(Exception ex)
+
+                            if (newZip != 0)
                             {
-                                terminal.sendOutput(ex.getMessage());
-                                break;
-                            }
-                            if (!newData.equals("") && !newData.equals("0"))
-                            {
-                                providerToEdit.setZipcode(Integer.parseInt(newData));
+                                providerToEdit.setZipcode(newZip);
                                 providerController.save(PROVIDER_CONTROLLER_FILE);
                             }
                             break;
-                        case '6': // edit member state
+                        case '6': // edit provider email
                             try
                             {
                                 newData = terminal.getInput("Enter new email or 0 to exit:");
