@@ -63,7 +63,6 @@ public class DataProcessingController implements iRequestReport
                     switch (menuChoice)
                     {
                         case 'B':
-                            int tries = 0;
                             String correctService;
                             // get member number and validate
                             sMemberNumber = terminal.getInput("Enter member Number: 333222335");
@@ -81,8 +80,10 @@ public class DataProcessingController implements iRequestReport
                                 terminal.sendOutput("Date of service must take place in the past");
                                 break;
                             }
-                              while(serviceFound==null)
-                                {
+
+                            // Reformat to remove loop in a loop.... no time now
+                            int tries = 0;
+                              while(serviceFound==null){
                                     try{
                                     serviceFound = serviceController.getService(Integer.parseInt(terminal.getInput("Enter the service code: 883948")));
                                     }catch (NumberFormatException  e){ }
@@ -93,23 +94,37 @@ public class DataProcessingController implements iRequestReport
                                         {
                                             terminal.sendOutput("3 invalid attempts");
                                             break;
-                                        } }
+                                        }
+                                    }
+                                  // display service name
+                                  int stoploop = 0;
+                                  while(serviceFound != null && ++stoploop <= 3){
+                                      tries = 0;
+                                      correctService = terminal.getInput(String.format("Is %s the correct service Y/N" , serviceFound.getServiceName()));
+                                      if(correctService.compareToIgnoreCase("Y") == 0){
+                                          // enter comments
+                                          String comments = terminal.getInput("Enter any comments for this service here (keep it short we only store 100 characters):");
+                                          if(comments.length() > 100){
+                                              comments = comments.substring(0,99);
+                                          }
+
+                                          // write service record to file
+                                          //int memberID, int serviceCode, String comments, Calendar dateAndTimeServiceEntered, Calendar dateOfService
+                                          serviceRecordController.saveNewServiceRecord(new ServiceRecord(((Provider)loggedIn).getIdentifier(),
+                                                  member.getIdentifier(), serviceFound.getServiceCode(), comments, GregorianCalendar.getInstance(), dateOfService));
+
+                                          terminal.sendOutput(String.format("Service fee to be paid: $%.2f?" , serviceFound.getServiceFee()));
+                                          stoploop = 4;
+                                      }
+                                      else if(correctService.compareToIgnoreCase("N") == 0){
+                                          stoploop = 4;
+                                          serviceFound = null;
+
+                                      }
+
+                                  }
                                 }
 
-                                // display service name
-                                if(serviceFound != null){
-                                    correctService = terminal.getInput(String.format("Is %s the correct service: $%.2f? Y/N" , serviceFound.getServiceName(), serviceFound.getServiceFee()));
-                                    if(correctService.toUpperCase().compareTo("Y") != 1){
-                                        break;
-                                    }
-
-
-                            // enter comments
-                            String comments = terminal.getInput("Enter any comments for this service here:");
-                            // write service record to file
-                            //int memberID, int serviceCode, String comments, Calendar dateAndTimeServiceEntered, Calendar dateOfService
-                            serviceRecordController.saveNewServiceRecord(new ServiceRecord(((Provider)loggedIn).getIdentifier(), member.getIdentifier(), serviceFound.getServiceCode(), comments, GregorianCalendar.getInstance(), dateOfService));
-                    }
                             break;
                         case 'E' : //Enter Member Number
                             sMemberNumber = terminal.getInput("Enter member Number:");
@@ -701,7 +716,6 @@ public class DataProcessingController implements iRequestReport
                     terminal.sendOutput(ex.getMessage());
                 }
 
-
             }
             else if (memberNumber == 0)
             {
@@ -748,9 +762,54 @@ public class DataProcessingController implements iRequestReport
             }
         }
 
-        memberName = collectStringInput("Enter member name");
-        memberAddress = collectStringInput("Enter street address");
-        memberCity = collectStringInput("Enter city");
+        loopThis = true;
+        while(loopThis == true)
+        {
+            memberName = collectStringInput("Enter member name");
+            if (memberName.length() > 0 && memberName.length() < 25 && memberName.matches("[\\p{Alnum} ]*" )
+            && !memberName.startsWith(" "))
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Member name must be alphanumeric and less than 25 characters");
+                loopThis = true;
+            }
+        }
+
+        loopThis = true;
+        while(loopThis == true)
+        {
+            memberAddress = collectStringInput("Enter street address");
+            if (memberAddress.length() > 0 && memberAddress.length() < 25 && memberAddress.matches("[\\p{Alnum} ]*")
+                    && !memberAddress.startsWith(" "))
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Member street must be alphanumeric and less than 25 characters");
+                loopThis = true;
+            }
+        }
+
+        loopThis = true;
+        while(loopThis == true)
+        {
+            memberCity = collectStringInput("Enter city");
+            if (memberCity.length() > 0 && memberCity.length() < 14 && memberCity.matches("[-\\p{Alnum}]+")
+                    && !memberCity.startsWith(" "))
+            {
+                loopThis = false;
+            }
+            else
+            {
+                terminal.sendOutput("Member street must be alphanumeric and less than 14 characters");
+                loopThis = true;
+            }
+        }
+
         loopThis = true;
         while(loopThis == true)
         {
