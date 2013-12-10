@@ -113,7 +113,7 @@ public class DataProcessingController implements iRequestReport
                                           serviceRecordController.saveNewServiceRecord(new ServiceRecord(((Provider)loggedIn).getIdentifier(),
                                                   member.getIdentifier(), serviceFound.getServiceCode(), comments, GregorianCalendar.getInstance(), dateOfService));
 
-                                          terminal.sendOutput(String.format("Service fee to be paid: $%.2f?" , serviceFound.getServiceFee()));
+                                          terminal.sendOutput(String.format("Service fee to be paid: $%.2f" , serviceFound.getServiceFee()));
                                           stoploop = 4;
                                       }
                                       else if(correctService.compareToIgnoreCase("N") == 0){
@@ -145,7 +145,7 @@ public class DataProcessingController implements iRequestReport
                             }
                             else if(!memberController.getMemberStatus(iMemberNum))
                             {
-                                terminal.sendOutput(String.format("Member %s Suspended - Fees Owed: %d.", tempMember.getIdentifier(), tempMember.getFeesOwed()));
+                                terminal.sendOutput(String.format("Member %s Suspended - Fees Owed: $ %s.", String.valueOf(tempMember.getIdentifier()), String.valueOf((tempMember.getFeesOwed()* -1))));
                             }
                             else
                             {
@@ -228,7 +228,7 @@ public class DataProcessingController implements iRequestReport
         }
 
 
-        if(failures >= MAX_NUMBER_OF_LOGIN_ATTEMPTS)
+        if(failures >= MAX_NUMBER_OF_LOGIN_ATTEMPTS && message.equals("Invalid Account"))
         {
             terminal.sendOutput("Number of allowed logon attempts exceeded!");
             handleExit();

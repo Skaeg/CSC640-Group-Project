@@ -76,11 +76,11 @@ public class ProviderReport implements iReport
 
     private String getDateFromCalendar(Calendar date)
     {
-        return String.format("%02d-%02d-%4d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR));
+        return String.format("%02d-%02d-%4d", date.get(Calendar.MONTH) + 1, date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR));
     }
 
     private String getDateAndTimeFromCalendar(Calendar date)
     {
-        return String.format("%02d-%02d-%4d %02d:%02d:%02d", date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR), date.get(Calendar.HOUR), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
+        return String.format("%02d-%02d-%4d %02d:%02d:%02d", date.get(Calendar.MONTH) + 1, date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.YEAR), date.get(Calendar.HOUR), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
     }
 }
